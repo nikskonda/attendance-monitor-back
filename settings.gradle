@@ -1,0 +1,6 @@
+rootProject.name = 'attendance-monitoring'
+include 'component:attendance-monitoring-api'
+findProject(':component:attendance-monitoring-api')?.name = 'attendance-monitoring-api'
+include 'component:attendance-monitoring-impl'
+findProject(':component:attendance-monitoring-impl')?.name = 'attendance-monitoring-impl'
+

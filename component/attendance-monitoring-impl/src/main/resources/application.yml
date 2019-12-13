@@ -1,0 +1,27 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    #    url: jdbc:postgresql://lib-db:5432/library
+    url: jdbc:postgresql://localhost:5432/attendance_monitor
+    username: postgres
+    #    password: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      idle-timeout: 10000
+  jpa:
+    properties.hibernate:
+      jdbc.lob.non_contextual_creation: true
+      format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate.ddl-auto: update
+  jackson:
+    default-property-inclusion: non_empty
+
+  main:
+    allow-bean-definition-overriding: true
+
+
