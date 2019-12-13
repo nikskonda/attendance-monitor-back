@@ -1,10 +1,12 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.MarkRepository;
-import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
+import com.bntu.master.attendance.monitor.api.model.AttendanceValue;
+import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.impl.dataaccess.AttendanceRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.GroupRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.MarkRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
@@ -15,8 +17,6 @@ import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.entity.User;
-import com.bntu.master.attendance.monitor.api.model.AttendanceValue;
-import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

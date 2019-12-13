@@ -1,9 +1,9 @@
 package com.bntu.master.attendance.monitor.impl.converter;
 
-import com.bntu.master.attendance.monitor.impl.entity.Group;
-import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.impl.entity.Group;
+import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import org.springframework.stereotype.Component;
 
 @Component

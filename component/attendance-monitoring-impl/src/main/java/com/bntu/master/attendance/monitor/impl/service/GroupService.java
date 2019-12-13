@@ -1,13 +1,13 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.impl.entity.Group;
-import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.api.exception.Exception;
-import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
-import com.bntu.master.attendance.monitor.impl.converter.GroupConverter;
-import com.bntu.master.attendance.monitor.impl.dataaccess.GroupRepository;
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.impl.converter.GroupConverter;
+import com.bntu.master.attendance.monitor.impl.dataaccess.GroupRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Group;
+import com.bntu.master.attendance.monitor.impl.entity.Speciality;
+import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -48,7 +48,8 @@ public class GroupService {
         return converter.convertToDto(repository.save(group));
     }
 
-    public GroupDto update(GroupDto dto) {
+    public GroupDto update(Long id, GroupDto dto) {
+        dto.setId(id);
         resolver.resolve(dto);
         Speciality speciality = specialityResolver.resolve(dto.getSpeciality());
         Group group = converter.convertToEntity(dto, speciality);

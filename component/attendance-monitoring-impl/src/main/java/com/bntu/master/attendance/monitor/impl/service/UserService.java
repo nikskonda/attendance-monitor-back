@@ -1,10 +1,10 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
-import com.bntu.master.attendance.monitor.impl.entity.User;
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.UserDto;
+import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
+import com.bntu.master.attendance.monitor.impl.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

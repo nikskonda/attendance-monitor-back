@@ -1,15 +1,15 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.AttendanceRepository;
-import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
-import com.bntu.master.attendance.monitor.impl.entity.Attendance;
-import com.bntu.master.attendance.monitor.impl.entity.Lesson;
-import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.api.model.AttendancePage;
 import com.bntu.master.attendance.monitor.api.model.AttendanceValue;
 import com.bntu.master.attendance.monitor.api.model.DateSpan;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.impl.dataaccess.AttendanceRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Attendance;
+import com.bntu.master.attendance.monitor.impl.entity.Lesson;
+import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.LessonResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;

@@ -1,9 +1,9 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
-import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.api.exception.Exception;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,10 +38,11 @@ public class SpecialityService {
         return ObjectRef.toObjectRef(speciality.getId(), speciality.getName());
     }
 
-    public ObjectRef update(ObjectRef dto) {
+    public ObjectRef update(Long id, ObjectRef dto) {
         if (dto.isNullAnyField()) {
             throw new Exception();
         }
+        dto.setId(id);
         Speciality speciality = resolver.resolve(dto);
         speciality.setName(dto.getQualifier());
         speciality = repository.save(speciality);

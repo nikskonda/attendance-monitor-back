@@ -1,9 +1,9 @@
 package com.bntu.master.attendance.monitor.impl.resolver;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
-import com.bntu.master.attendance.monitor.impl.entity.Role;
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

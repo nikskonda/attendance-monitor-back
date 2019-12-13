@@ -1,14 +1,14 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
+import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.api.model.PersonDto;
+import com.bntu.master.attendance.monitor.impl.converter.PersonConverter;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
-import com.bntu.master.attendance.monitor.api.exception.Exception;
-import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
-import com.bntu.master.attendance.monitor.impl.converter.PersonConverter;
-import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.resolver.RoleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,9 @@ public class PersonService {
         return converter.convertToDto(person);
     }
 
-    public PersonDto update(PersonDto dto) {
+    public PersonDto update(Long id, PersonDto dto) {
+        dto.setId(id);
+        resolver.resolve(dto);
         Group group = groupResolver.resolve(dto.getGroup());
         Person person = converter.convertToEntity(dto, group);
 

@@ -1,10 +1,10 @@
 package com.bntu.master.attendance.monitor.impl.converter;
 
+import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
-import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
-import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

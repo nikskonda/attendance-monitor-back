@@ -1,9 +1,9 @@
 package com.bntu.master.attendance.monitor.impl.resolver;
 
-import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
-import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,17 +1,17 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
+import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.model.LessonDto;
+import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.impl.converter.LessonConverter;
+import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Lesson;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
-import com.bntu.master.attendance.monitor.api.exception.Exception;
-import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
-import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
-import com.bntu.master.attendance.monitor.impl.converter.LessonConverter;
-import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
-import com.bntu.master.attendance.monitor.api.model.ObjectRef;
-import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.impl.resolver.LessonResolver;
+import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +53,8 @@ public class LessonService {
         return converter.convertToDto(lesson);
     }
 
-    public LessonDto update(LessonDto lessonDto) {
+    public LessonDto update(Long id, LessonDto lessonDto) {
+        lessonDto.setId(id);
         resolver.resolve(lessonDto);
         Group group = groupResolver.resolve(lessonDto.getGroup());
         Person professor = personResolver.resolveByRole(lessonDto.getProfessor(), RoleConstant.PROFESSOR);
