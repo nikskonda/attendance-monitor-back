@@ -6,8 +6,8 @@ spring:
     #    url: jdbc:postgresql://lib-db:5432/library
     url: jdbc:postgresql://localhost:5432/attendance_monitor
     username: postgres
-    #    password: postgres
-    password: password
+    password: postgres
+#    password: password
     driver-class-name: org.postgresql.Driver
     hikari:
       idle-timeout: 10000

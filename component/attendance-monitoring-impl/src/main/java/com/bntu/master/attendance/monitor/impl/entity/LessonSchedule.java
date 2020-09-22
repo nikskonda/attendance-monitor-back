@@ -4,33 +4,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.time.LocalTime;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "student_group")
-public class Group {
+public class LessonSchedule {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "group_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_schedule_generator")
     private Long id;
 
-    @Column(unique = true)
-    private String key;
+    @Column(name = "sort_order")
+    private Long order;
 
-    @ManyToOne
-    @JoinColumn
-    private Speciality speciality;
+    @Column
+    private LocalTime startTime;
+
+    @Column
+    private LocalTime finishTime;
 
 }

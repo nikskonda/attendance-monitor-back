@@ -1,6 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.entity;
 
-import com.bntu.master.attendance.monitor.api.model.AttendanceValue;
+import com.bntu.master.attendance.monitor.api.model.attendance.AttendanceValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

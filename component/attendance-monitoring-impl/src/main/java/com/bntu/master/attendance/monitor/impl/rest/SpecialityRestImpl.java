@@ -4,9 +4,11 @@ import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.rest.SpecialityRest;
 import com.bntu.master.attendance.monitor.impl.service.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RestController
 public class SpecialityRestImpl implements SpecialityRest {
 
     @Autowired

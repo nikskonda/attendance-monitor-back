@@ -5,6 +5,8 @@ import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Lesson;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
+import com.bntu.master.attendance.monitor.impl.entity.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,7 +19,8 @@ public class LessonConverter {
         entity.setFinishTime(dto.getFinishTime());
         entity.setStartTime(dto.getStartTime());
         entity.setProfessor(prof);
-        entity.setSubject(dto.getSubject());
+        Subject subject = new Subject(dto.getSubject().getId(), dto.getSubject().getQualifier());
+        entity.setSubject(subject);
         entity.setGroup(group);
         return entity;
     }
@@ -29,7 +32,7 @@ public class LessonConverter {
         dto.setFinishTime(entity.getFinishTime());
         dto.setStartTime(entity.getStartTime());
         dto.setProfessor(ObjectRef.toObjectRef(entity.getProfessor().getId(), entity.getProfessor().getEmail()));
-        dto.setSubject(entity.getSubject());
+        dto.setSubject(ObjectRef.toObjectRef(entity.getSubject().getId(), entity.getSubject().getName()));
         dto.setGroup(ObjectRef.toObjectRef(entity.getGroup().getId(), entity.getGroup().getKey()));
         return dto;
     }

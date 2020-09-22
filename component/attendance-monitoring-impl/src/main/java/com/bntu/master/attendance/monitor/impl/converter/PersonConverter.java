@@ -7,6 +7,7 @@ import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,8 +32,12 @@ public class PersonConverter {
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setPatronymic(entity.getPatronymic());
-        dto.setGroup(ObjectRef.toObjectRef(entity.getGroup().getId(), entity.getGroup().getKey()));
+        if (entity.getGroup() != null) {
+            dto.setGroup(ObjectRef.toObjectRef(entity.getGroup().getId(), entity.getGroup().getKey()));
+        }
         dto.setRoles(entity.getRoles().stream().map(role -> ObjectRef.toObjectRef(role.getId(), role.getName())).collect(Collectors.toSet()));
         return dto;
     }
+
+
 }

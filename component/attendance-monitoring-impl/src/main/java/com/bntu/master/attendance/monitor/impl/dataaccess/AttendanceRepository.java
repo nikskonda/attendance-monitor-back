@@ -14,6 +14,8 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findAllByStudentGroupKeyAndLessonIn(String groupKey, List<Lesson> lessons);
 
+    List<Attendance> findAllByStudentInAndLessonIn(Set<Person> students, Set<Lesson> lessons);
+
     void deleteByStudentInAndLessonIn(Set<Person> students, Set<Lesson> lessons);
 
 }

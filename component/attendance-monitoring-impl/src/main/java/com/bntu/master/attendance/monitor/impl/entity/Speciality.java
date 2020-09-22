@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +22,8 @@ public class Speciality {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "speciality_generator")
     private Long id;
-    @NaturalId
+
+    @Column(unique = true)
     private String name;
 
 }

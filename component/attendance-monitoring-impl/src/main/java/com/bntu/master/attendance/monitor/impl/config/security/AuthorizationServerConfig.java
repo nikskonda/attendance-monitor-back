@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    private static final String CLIEN_ID = "devglan-client";
-    private static final String CLIENT_SECRET = "$2a$04$KZaLtwwOpBjRX6XY5mXC/uaUSOINyroqx5swI4wMyBxBeGgXrmjY.";
+    private static final String CLIEN_ID = "attendance-monitor-client";
+    private static final String CLIENT_SECRET = "$2a$04$TlIII2DueoYOO9tFJnoyneAX0u4Vq0AV2tgGuZKNS5b0nipuUPZom";
     private static final String GRANT_TYPE = "password";
     private static final String AUTHORIZATION_CODE = "authorization_code";
     private static final String REFRESH_TOKEN = "refresh_token";
@@ -57,7 +57,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
-
         configurer
                 .inMemory()
                 .withClient(CLIEN_ID)

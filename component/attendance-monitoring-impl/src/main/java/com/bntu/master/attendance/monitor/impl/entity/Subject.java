@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,24 +12,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "student_group")
-public class Group {
+public class Subject {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "group_generator")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_generator")
     private Long id;
 
     @Column(unique = true)
-    private String key;
-
-    @ManyToOne
-    @JoinColumn
-    private Speciality speciality;
+    private String name;
 
 }

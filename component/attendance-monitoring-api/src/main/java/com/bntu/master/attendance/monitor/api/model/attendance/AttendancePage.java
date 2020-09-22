@@ -1,5 +1,6 @@
-package com.bntu.master.attendance.monitor.api.model;
+package com.bntu.master.attendance.monitor.api.model.attendance;
 
+import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 

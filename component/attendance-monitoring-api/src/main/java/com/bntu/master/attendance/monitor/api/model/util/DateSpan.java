@@ -1,4 +1,4 @@
-package com.bntu.master.attendance.monitor.api.model;
+package com.bntu.master.attendance.monitor.api.model.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

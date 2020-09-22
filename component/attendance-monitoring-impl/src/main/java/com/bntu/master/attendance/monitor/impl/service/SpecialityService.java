@@ -6,10 +6,12 @@ import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class SpecialityService {
 
     @Autowired
@@ -39,10 +41,10 @@ public class SpecialityService {
     }
 
     public ObjectRef update(Long id, ObjectRef dto) {
+        dto.setId(id);
         if (dto.isNullAnyField()) {
             throw new Exception();
         }
-        dto.setId(id);
         Speciality speciality = resolver.resolve(dto);
         speciality.setName(dto.getQualifier());
         speciality = repository.save(speciality);
@@ -51,9 +53,6 @@ public class SpecialityService {
     }
 
     public void delete(ObjectRef dto) {
-        if (dto.isNullAnyField()) {
-            throw new Exception();
-        }
         Speciality speciality = resolver.resolve(dto);
         repository.delete(speciality);
     }

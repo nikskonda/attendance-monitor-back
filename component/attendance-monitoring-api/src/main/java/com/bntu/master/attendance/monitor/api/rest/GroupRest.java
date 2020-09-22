@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.api.rest;
 
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@CrossOrigin
 @RequestMapping("/group")
 public interface GroupRest {
 
-    @GetMapping
+    @GetMapping("/{id}")
     GroupDto find(@PathVariable Long id, @PathVariable String qualifier);
 
     @GetMapping

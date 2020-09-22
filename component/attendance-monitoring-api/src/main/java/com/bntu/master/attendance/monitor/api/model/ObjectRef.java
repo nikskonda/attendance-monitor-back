@@ -16,7 +16,6 @@ public class ObjectRef {
     private Long id;
     private String qualifier;
 
-
     public ObjectRef(Long id) {
         this.id = id;
     }

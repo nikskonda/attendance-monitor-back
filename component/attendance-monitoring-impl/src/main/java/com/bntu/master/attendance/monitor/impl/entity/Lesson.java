@@ -1,5 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.entity;
 
+import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,15 +26,18 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "lesson_generator")
     private Long id;
     private LocalDate date;
-    private String subject;
     private LocalDateTime startTime;
     private LocalDateTime finishTime;
 
     @ManyToOne
-    @JoinColumn
     private Person professor;
 
     @ManyToOne
     private Group group;
+
+    @ManyToOne
+    private Subject subject;
+
+    private SubjectTypeConstant subjectType;
 
 }

@@ -1,7 +1,7 @@
 package com.bntu.master.attendance.monitor.impl.rest;
 
-import com.bntu.master.attendance.monitor.api.model.AttendancePage;
-import com.bntu.master.attendance.monitor.api.model.DateSpan;
+import com.bntu.master.attendance.monitor.api.model.attendance.AttendancePage;
+import com.bntu.master.attendance.monitor.api.model.util.DateSpan;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.service.AttendanceService;
 import com.bntu.master.attendance.monitor.impl.service.GenerateService;

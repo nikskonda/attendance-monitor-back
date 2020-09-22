@@ -10,10 +10,12 @@ import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class GroupService {
 
     @Autowired
