@@ -18,8 +18,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Set<Person> findAllByIdInOrEmailIn(Set<Long> ids, Set<String> emails);
 
-    Set<Person> findAllByGroup(Group group);
-
     Set<Person> findAllByRolesIn(List<Role> roles);
 
 }

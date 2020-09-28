@@ -4,17 +4,23 @@ import com.bntu.master.attendance.monitor.api.exception.Exception;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.api.model.StudentDto;
 import com.bntu.master.attendance.monitor.impl.converter.PersonConverter;
+import com.bntu.master.attendance.monitor.impl.dataaccess.ParentContactRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.StudentGroupRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
+import com.bntu.master.attendance.monitor.impl.entity.ParentContact;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
+import com.bntu.master.attendance.monitor.impl.entity.StudentGroup;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.RoleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +32,12 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private ParentContactRepository parentContactRepository;
+
+    @Autowired
+    private StudentGroupRepository studentGroupRepository;
 
     @Autowired
     private PersonConverter converter;
@@ -52,8 +64,7 @@ public class PersonService {
         if (!dto.isNullId()) {
             throw new Exception();
         }
-        Group group = groupResolver.resolve(dto.getGroup());
-        Person person = converter.convertToEntity(dto, group);
+        Person person = converter.convertToEntity(dto);
 
         person = repository.save(person);
 
@@ -63,8 +74,7 @@ public class PersonService {
     public PersonDto update(Long id, PersonDto dto) {
         dto.setId(id);
         resolver.resolve(dto);
-        Group group = groupResolver.resolve(dto.getGroup());
-        Person person = converter.convertToEntity(dto, group);
+        Person person = converter.convertToEntity(dto);
 
         person = repository.save(person);
 
@@ -103,8 +113,48 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
-    public Set<PersonDto> findAllByGroup(ObjectRef group) {
-        return repository.findAllByGroup(groupResolver.resolve(group)).stream().map(person -> converter.convertToDto(person)).collect(Collectors.toSet());
+    public List<StudentDto> findStudentsByGroup(ObjectRef group) {
+        Group gr = groupResolver.resolve(group);
+        Set<StudentGroup> studentGroup = studentGroupRepository.findAllByGroup(gr);
+        return studentGroup.stream()
+                .map(sg -> converter.convertToDto(sg.getStudent(), gr))
+                .sorted(Comparator.comparing(PersonDto::getFullName))
+                .collect(Collectors.toList());
     }
+
+    public StudentDto createStudent(StudentDto studentDto) {
+        Group group = groupResolver.resolve(studentDto.getGroup());
+        Person stud = converter.convertToEntity(studentDto);
+        Set<Role> roles = roleResolver.resolve(stud.getRoles());
+        stud.setRoles(roles);
+        stud = repository.save(stud);
+        studentGroupRepository.save(new StudentGroup(stud, group));
+        return converter.convertToDto(stud, group);
+    }
+
+    public StudentDto updateStudent(Long id, StudentDto studentDto) {
+        Group group = groupResolver.resolve(studentDto.getGroup());
+        Person person = resolver.resolve(ObjectRef.toObjectRef(id));
+
+        Person updatedStud = converter.convertToEntity(studentDto);
+        updatedStud.setId(id);
+        updatedStud = repository.save(updatedStud);
+
+        StudentGroup studentGroup = studentGroupRepository.findFirstByStudent(person);
+        if (!studentGroup.getGroup().getId().equals(group.getId())){
+            studentGroupRepository.delete(studentGroup);
+            studentGroupRepository.save(new StudentGroup(updatedStud, group));
+        }
+        return converter.convertToDto(updatedStud, group);
+    }
+
+    public void deleteStudent(Long id) {
+        Person stud = resolver.resolve(ObjectRef.toObjectRef(id));
+        StudentGroup studentGroup = studentGroupRepository.findFirstByStudent(stud);
+        studentGroupRepository.delete(studentGroup);
+        repository.delete(stud);
+    }
+
+
 
 }

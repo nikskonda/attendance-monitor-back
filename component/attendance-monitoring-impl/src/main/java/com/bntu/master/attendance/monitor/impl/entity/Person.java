@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,15 +31,11 @@ public class Person {
     private String lastName;
     private String patronymic;
 
-    @NaturalId
+    @Column(unique = true)
     private String email;
 
     @ManyToMany
     @JoinColumn
     private Set<Role> roles;
-
-    @ManyToOne
-    @JoinColumn
-    private Group group;
 
 }

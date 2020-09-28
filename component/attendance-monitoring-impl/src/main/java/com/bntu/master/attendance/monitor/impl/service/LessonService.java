@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
 import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleGrid;
@@ -14,6 +15,7 @@ import com.bntu.master.attendance.monitor.impl.converter.PersonConverter;
 import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Lesson;
+import com.bntu.master.attendance.monitor.impl.entity.LessonSchedule;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Subject;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,9 +129,9 @@ public class LessonService {
         lessons.forEach(l -> header.add(l.getDate()));
         header.stream().sorted();
 
-        Set<LocalTimeSpan> headerRow = new HashSet<>();
-        lessons.forEach(l -> headerRow.add(new LocalTimeSpan(l.getStartTime(), l.getFinishTime())));
-        headerRow.stream().sorted();
+        Set<LessonScheduleDto> headerRow = new HashSet<>();
+        lessons.forEach(l -> headerRow.add(l.getTime()));
+        headerRow.stream().sorted(Comparator.comparing(LessonScheduleDto::getOrder));
 
         ScheduleGrid grid = new ScheduleGrid(header, headerRow);
         lessons.forEach(l -> grid.setCell(l));

@@ -22,13 +22,6 @@ public class Rest {
     @Autowired
     private GenerateService generateService;
 
-    @GetMapping
-    public AttendancePage test() {
-        DateSpan dateSpan = new DateSpan();
-        dateSpan.setStartDate(LocalDate.now().minusDays(1));
-        dateSpan.setFinishDate(LocalDate.now().plusDays(6));
-        return attendanceService.getAttendanceForGroup(new ObjectRef("group4_spec2"), 123L, dateSpan);
-    }
 
     @GetMapping("/generate")
     public void generate() {

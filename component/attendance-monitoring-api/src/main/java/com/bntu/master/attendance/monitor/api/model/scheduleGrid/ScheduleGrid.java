@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.api.model.scheduleGrid;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
+import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.util.LocalTimeSpan;
 import lombok.Data;
 
@@ -17,12 +18,12 @@ public class ScheduleGrid {
     private Integer columns;
 
     private List<LocalDate> header;
-    private List<LocalTimeSpan> rowHeader;
+    private List<LessonScheduleDto> rowHeader;
 
     private ScheduleCell[][] cells;
 
 
-    public ScheduleGrid(Set<LocalDate> header, Set<LocalTimeSpan> rowHeader) {
+    public ScheduleGrid(Set<LocalDate> header, Set<LessonScheduleDto> rowHeader) {
         setHeader(new ArrayList<>(header));
         setRowHeader(new ArrayList<>(rowHeader));
         cells = new ScheduleCell[rows][columns];
@@ -37,8 +38,8 @@ public class ScheduleGrid {
             }
             col++;
         }
-        for (LocalTimeSpan time : rowHeader) {
-            if (time.getStartTime().equals(lessonDto.getStartTime().toLocalTime()) && time.getEndTime().equals(lessonDto.getFinishTime().toLocalTime())) {
+        for (LessonScheduleDto time : rowHeader) {
+            if (time.equals(lessonDto.getTime())) {
                 break;
             }
             row++;
@@ -52,9 +53,9 @@ public class ScheduleGrid {
         columns = header.size();
     }
 
-    public void setRowHeader(List<LocalTimeSpan> rowHeader) {
+    public void setRowHeader(List<LessonScheduleDto> rowHeader) {
         this.rowHeader = rowHeader;
-        this.rowHeader.sort(Comparator.comparing(LocalTimeSpan::getStartTime));
+        this.rowHeader.sort(Comparator.comparing(LessonScheduleDto::getOrder));
         rows = rowHeader.size();
     }
 

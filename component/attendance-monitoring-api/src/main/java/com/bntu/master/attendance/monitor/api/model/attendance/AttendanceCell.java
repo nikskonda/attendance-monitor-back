@@ -32,7 +32,7 @@ public class AttendanceCell {
 
     public AttendanceCell(LessonDto lessonDto) {
         this.lesson = lessonDto;
-        text = lessonDto.getSubjectType() + " " + lessonDto.getStartTime() + " - " + lessonDto.getFinishTime();
+        text = String.format("%s\n%s - %s (%s)", lessonDto.getDate(), lessonDto.getTime().getStartTime(), lessonDto.getTime().getFinishTime(), lessonDto.getSubjectType());
         isHeader = true;
     }
 
@@ -45,6 +45,15 @@ public class AttendanceCell {
         AttendanceCell cell = new AttendanceCell();
         cell.setEmpty(true);
         cell.setText("");
+        return cell;
+    }
+
+    public static AttendanceCell empty(LessonDto lessonDto, PersonDto person){
+        AttendanceCell cell = new AttendanceCell();
+        cell.setEmpty(true);
+        cell.setText("");
+        cell.setLesson(lessonDto);
+        cell.setPerson(person);
         return cell;
     }
 

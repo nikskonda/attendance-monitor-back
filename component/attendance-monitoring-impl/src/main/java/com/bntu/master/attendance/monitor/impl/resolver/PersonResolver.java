@@ -29,10 +29,12 @@ public class PersonResolver {
     public Person resolveByRole(ObjectRef objectRef, RoleConstant role) {
         Person person = resolve(objectRef);
         Role roleFromDb = roleResolver.resolve(role.get());
-        if (person.getRoles().contains(roleFromDb)) {
-            throw new NotFoundException();
+        for (Role r : person.getRoles()) {
+            if (roleFromDb.equals(r)){
+                return person;
+            }
         }
-        return person;
+        throw new NotFoundException();
     }
 
 }

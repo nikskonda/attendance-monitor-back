@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 public class LessonDto extends ObjectRef {
 
     private LocalDate date;
-    private LocalDateTime startTime;
-    private LocalDateTime finishTime;
+    private LessonScheduleDto time;
     private ObjectRef subject;
     private SubjectTypeConstant subjectType;
     private ObjectRef professor;

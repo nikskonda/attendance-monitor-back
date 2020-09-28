@@ -26,15 +26,20 @@ public class AttendanceGrid {
 
     private AttendanceCell[][] cells;
 
-    public AttendanceGrid(Set<LessonDto> lessonHeader, Set<PersonDto> personHeader) {
+    public AttendanceGrid(Set<LessonDto> lessonHeader, List<PersonDto> personHeader) {
         setLessonHeader(lessonHeader);
         setPersonHeader(personHeader);
         cells = new AttendanceCell[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                cells[i][j] = AttendanceCell.empty(this.lessonHeader.get(j), this.personHeader.get(i));
+            }
+        }
     }
 
     private void setLessonHeader(Set<LessonDto> lessonHeader) {
         this.lessonHeader = new ArrayList<>(lessonHeader);
-        this.lessonHeader.sort(Comparator.comparing(LessonDto::getStartTime));
+        this.lessonHeader.sort(Comparator.comparing(l -> l.getTime().getStartTime()));
         columns = this.lessonHeader.size();
         lessonIndexMap = new HashMap<>();
         for (int i = 0; i < this.lessonHeader.size(); i++) {
@@ -42,7 +47,7 @@ public class AttendanceGrid {
         }
     }
 
-    private void setPersonHeader(Set<PersonDto> personHeader) {
+    private void setPersonHeader(List<PersonDto> personHeader) {
         this.personHeader = new ArrayList<>(personHeader);
         this.personHeader.sort(Comparator.comparing(PersonDto::getLastName));
         rows = this.personHeader.size();
@@ -76,7 +81,9 @@ public class AttendanceGrid {
 
         for (AttendanceCell[] row : cells) {
             rowIndex++;
+            ObjectRef person = personHeader.get(rowIndex - 1);
             toReturn.add(new AttendanceCell(personHeader.get(rowIndex - 1)));
+
             for (AttendanceCell c : row) {
                 if (c != null) {
 

@@ -5,29 +5,33 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalTime;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class LessonSchedule {
+@Table(name = "students_by_group")
+public class StudentGroup {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_schedule_generator")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "stud_gr_generator")
     private Long id;
 
-    @Column(name = "sort_order")
-    private Long order;
+    @OneToOne
+    private Group group;
 
-    private LocalTime startTime;
-    private LocalTime finishTime;
-    private String shift;
+    @OneToOne
+    private Person student;
 
+    public StudentGroup(Person student, Group group) {
+        this.group = group;
+        this.student = student;
+    }
 }

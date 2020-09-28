@@ -4,8 +4,14 @@ import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class RoleResolver {
@@ -19,6 +25,21 @@ public class RoleResolver {
         }
         return objectRef.isNullId() ? repository.findByName(objectRef.getQualifier()).orElseThrow(NotFoundException::new)
                 : repository.findById(objectRef.getId()).orElseThrow(NotFoundException::new);
+    }
+
+    public Set<Role> resolve(Collection<Role> roles) {
+        List<Long> byId = new ArrayList<>();
+        List<String> byQualifier = new ArrayList<>();
+        for (Role r : roles) {
+            if (r.getId()!=null) {
+                byId.add(r.getId());
+            } else {
+                if (StringUtils.isNotBlank(r.getName())){
+                    byQualifier.add(r.getName());
+                }
+            }
+        }
+        return repository.findAllByIdInAndNameIn(byId, byQualifier);
     }
 
 }

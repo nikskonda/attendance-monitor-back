@@ -1,44 +1,39 @@
 package com.bntu.master.attendance.monitor.impl.entity;
 
-import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import javax.persistence.OneToOne;
+import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Lesson {
+public class ParentContact implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "lesson_generator")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "parent_contact_generator")
     private Long id;
-    private LocalDate date;
 
-    @ManyToOne
-    private LessonSchedule time;
+    @OneToOne
+    private Person parent;
 
-    @ManyToOne
-    private Person professor;
+    @OneToOne
+    private Person student;
 
-    @ManyToOne
-    private Group group;
-
-    @ManyToOne
-    private Subject subject;
-
-    private SubjectTypeConstant subjectType;
+    private boolean isNotify;
 
 }

@@ -18,6 +18,7 @@ public class LessonScheduleConverter {
             entity.setOrder(dto.getOrder());
             entity.setStartTime(dto.getStartTime());
             entity.setFinishTime(dto.getFinishTime());
+            entity.setShift(dto.getShift().toString());
             result.add(entity);
         }
         return result;
@@ -31,6 +32,7 @@ public class LessonScheduleConverter {
             dto.setOrder(entity.getOrder());
             dto.setStartTime(entity.getStartTime());
             dto.setFinishTime(entity.getFinishTime());
+            dto.setShift(LessonScheduleDto.Shift.find(entity.getShift()));
             result.add(dto);
         }
         return result;

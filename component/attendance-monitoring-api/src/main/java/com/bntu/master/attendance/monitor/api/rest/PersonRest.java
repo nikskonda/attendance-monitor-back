@@ -2,6 +2,7 @@ package com.bntu.master.attendance.monitor.api.rest;
 
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.api.model.StudentDto;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,8 @@ public interface PersonRest {
     @GetMapping("/byRoles")
     List<PersonDto> findAllByRole(@RequestParam List<RoleConstant> roles);
 
+
+
     @PostMapping
     PersonDto create(@RequestBody PersonDto person);
 
@@ -37,5 +40,18 @@ public interface PersonRest {
 
     @DeleteMapping(("/{id}"))
     void delete(@PathVariable Long id);
+
+
+    @GetMapping("/students")
+    List<StudentDto> findStudentsByGroup(@RequestParam Long groupId);
+
+    @PostMapping("/student")
+    StudentDto createStudent(@RequestBody StudentDto studentDto);
+
+    @PutMapping("/student/{id}")
+    StudentDto updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto);
+
+    @DeleteMapping("/student/{id}")
+    void deleteStudent(@PathVariable Long id);
 
 }

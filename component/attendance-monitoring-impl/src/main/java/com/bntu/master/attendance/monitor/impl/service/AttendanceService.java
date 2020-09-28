@@ -2,7 +2,9 @@ package com.bntu.master.attendance.monitor.impl.service;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
+import com.bntu.master.attendance.monitor.api.model.StudentDto;
 import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
+import com.bntu.master.attendance.monitor.api.model.attendance.AttendanceCell;
 import com.bntu.master.attendance.monitor.api.model.attendance.AttendanceGrid;
 import com.bntu.master.attendance.monitor.api.model.attendance.AttendanceList;
 import com.bntu.master.attendance.monitor.api.model.attendance.AttendancePage;
@@ -16,7 +18,6 @@ import com.bntu.master.attendance.monitor.impl.dataaccess.AttendanceRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Attendance;
-import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Lesson;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
@@ -29,7 +30,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +73,28 @@ public class AttendanceService {
     @Autowired
     private PersonConverter personConverter;
 
+    public List<AttendanceCell> saveAll(List<AttendanceCell> cells){
+        List<Attendance> toSave = new ArrayList<>();
+        for (AttendanceCell cell : cells) {
+            Lesson lesson = lessonResolver.resolve(cell.getLesson());
+            Person student = personResolver.resolveByRole(cell.getPerson(), RoleConstant.STUDENT);
+            Attendance fromDb = repository.findFirstByStudentAndLesson(student, lesson);
+
+            Attendance attendance = new Attendance();
+            if (fromDb != null) {
+                attendance.setId(fromDb.getId());
+            }
+            attendance.setDateTime(LocalDateTime.now());
+            attendance.setStudent(student);
+            attendance.setProfessor(lesson.getProfessor());
+            attendance.setLesson(lesson);
+            attendance.setValue(AttendanceValue.find(cell.getText()));
+            toSave.add(attendance);
+        }
+        repository.saveAll(toSave);
+        return Collections.EMPTY_LIST; //ToDO
+    }
+
     public AttendancePage update(AttendancePage attendancePage) {
         List<Attendance> attendances = new ArrayList<>();
         Set<Lesson> lessons = new HashSet<>();
@@ -99,21 +121,21 @@ public class AttendanceService {
         return convert(attendances);
     }
 
-    public AttendancePage getAttendanceForGroup(ObjectRef studentGroup, Long personId, DateSpan dateSpan) {
-        List<Lesson> lessons = lessonRepository.findAllByDateBetween(dateSpan.getStartDate(), dateSpan.getFinishDate());
-        List<Attendance> attendances = repository.findAllByStudentGroupKeyAndLessonIn(groupResolver.resolve(studentGroup).getKey(), lessons);
-        return convert(attendances);
-    }
+//    public AttendancePage getAttendanceForGroup(ObjectRef studentGroup, Long personId, DateSpan dateSpan) {
+//        List<Lesson> lessons = lessonRepository.findAllByDateBetween(dateSpan.getStartDate(), dateSpan.getFinishDate());
+//        List<Attendance> attendances = repository.findAllByStudentGroupKeyAndLessonIn(groupResolver.resolve(studentGroup).getKey(), lessons);
+//        return convert(attendances);
+//    }
 
     public AttendanceList getAttendanceForGroup(ObjectRef studentGroup, DateSpan dateSpan, ObjectRef subject, Set<SubjectTypeConstant> subjectType) {
         Set<LessonDto> lessons = lessonService.findAllByDateBetweenAndSubjectAndSubjectTypeIn(dateSpan.getStartDate(), dateSpan.getFinishDate(), subjectResolver.resolve(subject), subjectType);
 
-        Set<PersonDto> students = personService.findAllByGroup(studentGroup);
+        List<PersonDto> students = new ArrayList<>(personService.findStudentsByGroup(studentGroup));
 
         AttendanceGrid grid = new AttendanceGrid(lessons, students);
         List<Attendance> attendances = repository.findAllByStudentInAndLessonIn(
                 students.stream()
-                        .map(st -> personConverter.convertToEntity(st, null))
+                        .map(st -> personConverter.convertToEntity(st))
                         .collect(Collectors.toSet()),
                 lessons.stream()
                         .map(l -> lessonConverter.convertToEntity(l, null, null))

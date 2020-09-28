@@ -3,6 +3,7 @@ package com.bntu.master.attendance.monitor.impl.rest;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.api.model.StudentDto;
 import com.bntu.master.attendance.monitor.api.rest.PersonRest;
 import com.bntu.master.attendance.monitor.impl.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,25 @@ public class PersonRestImpl implements PersonRest {
 
     @Override
     public void delete(Long id) {
+    }
 
+    @Override
+    public List<StudentDto> findStudentsByGroup(Long groupId) {
+        return service.findStudentsByGroup(ObjectRef.toObjectRef(groupId));
+    }
+
+    @Override
+    public StudentDto createStudent(StudentDto studentDto) {
+        return service.createStudent(studentDto);
+    }
+
+    @Override
+    public StudentDto updateStudent(Long id, StudentDto studentDto) {
+        return service.updateStudent(id, studentDto);
+    }
+
+    @Override
+    public void deleteStudent(Long id) {
+        service.deleteStudent(id);
     }
 }

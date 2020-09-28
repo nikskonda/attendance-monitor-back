@@ -13,7 +13,8 @@ spring:
       idle-timeout: 10000
   jpa:
     properties.hibernate:
-      jdbc.lob.non_contextual_creation: true
+      jdbc:
+        lob.non_contextual_creation: true
       format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true

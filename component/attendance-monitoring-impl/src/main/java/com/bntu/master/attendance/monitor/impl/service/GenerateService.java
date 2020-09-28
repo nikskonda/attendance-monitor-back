@@ -11,6 +11,7 @@ import com.bntu.master.attendance.monitor.impl.dataaccess.MarkRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.StudentGroupRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.SubjectRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Attendance;
@@ -20,6 +21,7 @@ import com.bntu.master.attendance.monitor.impl.entity.LessonSchedule;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import com.bntu.master.attendance.monitor.impl.entity.Speciality;
+import com.bntu.master.attendance.monitor.impl.entity.StudentGroup;
 import com.bntu.master.attendance.monitor.impl.entity.Subject;
 import com.bntu.master.attendance.monitor.impl.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GenerateService {
@@ -58,7 +61,8 @@ public class GenerateService {
     private SubjectRepository subjectRepository;
     @Autowired
     private LessonScheduleRepository lessonScheduleRepository;
-
+    @Autowired
+    private StudentGroupRepository studentGroupRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -89,23 +93,30 @@ public class GenerateService {
         groups.add(new Group(null, "group5_spec3", speciality3));
         groups = groupRepository.saveAll(groups);
 
-        List<Person> people = new ArrayList<>();
+        List<Person> studs = new ArrayList<>();
         List<User> users = new ArrayList<>();
         Set<Role> studRole = new HashSet<>();
         studRole.add(role1);
         for (int i = 0; i < 50; i++) {
             Long id = i + 1L;
             String name = "stud" + id;
-            people.add(new Person(null, name, name, name, name, studRole, groups.get(i / 10)));
+            studs.add(new Person(null, name, name, name, name, studRole));
             users.add(new User(name, bCryptPasswordEncoder.encode(name)));
         }
+        studs = personRepository.saveAll(studs);
+        Set<StudentGroup> studentGroups = new HashSet<>();
+        for (Person p : studs) {
+            studentGroups.add(new StudentGroup(p, groups.get(random.nextInt(groups.size()))));
+        }
+        studentGroupRepository.saveAll(studentGroups);
+        List<Person> people = new ArrayList<>();
         Set<Role> profRole = new HashSet<>();
         profRole.add(role2);
         List<Person> profs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Long id = people.size() + 1L + i;
             String name = "prof" + id;
-            profs.add(new Person(null, name, name, name, name, profRole, null));
+            profs.add(new Person(null, name, name, name, name, profRole));
             users.add(new User(name, bCryptPasswordEncoder.encode(name)));
         }
         Set<Role> parentRole = new HashSet<>();
@@ -113,25 +124,30 @@ public class GenerateService {
         for (int i = 0; i < 20; i++) {
             Long id = people.size() + profs.size() + 1L;
             String name = "parent" + id;
-            people.add(new Person(null, name, name, name, name, parentRole, null));
+            people.add(new Person(null, name, name, name, name, parentRole));
             users.add(new User(name, bCryptPasswordEncoder.encode(name)));
         }
         Set<Role> adminRole = new HashSet<>();
         adminRole.add(role4);
-        personRepository.save(new Person(null, "admin", "admin", "admin", "admin", adminRole, null));
+        personRepository.save(new Person(null, "admin", "admin", "admin", "admin", adminRole));
         users.add(new User("admin", bCryptPasswordEncoder.encode("admin")));
         people = personRepository.saveAll(people);
         profs = personRepository.saveAll(profs);
         userRepository.saveAll(users);
 
+        LocalTime startTime = LocalTime.of(8, 0, 0 ,0);
         List<LessonSchedule> lessonSchedules = new ArrayList<>();
-        for (int i = 0; i<5; i++) {
+        for (int i = 0; i<10; i++) {
+            if (i==5) {
+                startTime = LocalTime.of(12, 10, 0 ,0);
+            }
             LessonSchedule schedule = new LessonSchedule();
             schedule.setOrder(i+1L);
-            LocalTime startTime = LocalTime.of(8 + i*2, 30, 0 ,0);
             schedule.setStartTime(startTime);
-            schedule.setFinishTime(startTime.plusMinutes(95));
+            schedule.setFinishTime(startTime = startTime.plusMinutes(95));
+            schedule.setShift(i<5?"1":"2");
             lessonSchedules.add(schedule);
+            startTime = startTime.plusMinutes(15);
         }
         lessonScheduleRepository.saveAll(lessonSchedules);
 
@@ -149,8 +165,7 @@ public class GenerateService {
             LocalDate date = LocalDate.now().minusDays(7L).plusDays(id / 5);
             if (random.nextInt(100)<75)
             lessons.add(new Lesson(null, date,
-                    LocalDateTime.of(date, lessonSchedules.get((int)(id % 5)).getStartTime()),
-                    LocalDateTime.of(date, lessonSchedules.get((int)(id % 5)).getFinishTime()),
+                    lessonSchedules.get(i % 5),
                     profs.get(random.nextInt(profs.size())),
                     groups.get(random.nextInt(groups.size())),
                     subjects.get(random.nextInt(subjects.size())),
@@ -162,11 +177,12 @@ public class GenerateService {
         List<Attendance> attendances = new ArrayList<>();
         for (Lesson lesson : lessons) {
             long j = 0;
-            for (Person student : findByGroup(lesson.getGroup(), people, role1)) {
+
+            for (Person student : findByGroup(lesson.getGroup())) {
                 attendances.add(new Attendance(null, lesson,
                         student, getRandomAttendance(),
                         profs.get(random.nextInt(profs.size())),
-                        lesson.getStartTime().plusMinutes(j++)));
+                        LocalDateTime.of(lesson.getDate(), lesson.getTime().getStartTime().plusMinutes(j++))));
             }
         }
         attendances = attendanceRepository.saveAll(attendances);
@@ -177,14 +193,8 @@ public class GenerateService {
         return AttendanceValue.values()[random.nextInt(AttendanceValue.values().length)];
     }
 
-    private List<Person> findByGroup(Group group, List<Person> people, Role role) {
-        List<Person> result = new ArrayList<>();
-        for (Person person : people) {
-            if (person.getGroup() != null && person.getGroup().getId().equals(group.getId()) && person.getRoles().contains(role)) {
-                result.add(person);
-            }
-        }
-        return result;
+    private Set<Person> findByGroup(Group group) {
+        return studentGroupRepository.findAllByGroup(group).stream().map(g -> g.getStudent()).collect(Collectors.toSet());
     }
 
 

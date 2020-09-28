@@ -1,12 +1,14 @@
 package com.bntu.master.attendance.monitor.api.model.scheduleGrid;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
+import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.util.LocalTimeSpan;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -28,17 +30,27 @@ public class ScheduleCell {
         setHeader(true);
     }
 
-    public ScheduleCell(LocalTimeSpan timeSpan, int row){
-        text = timeSpan.getStartTime().toString() + " - " + timeSpan.getEndTime().toString();
+    public ScheduleCell(LessonScheduleDto time, int row){
+        text = String.format("%s - %s (%s)", time.getStartTime().toString(), time.getFinishTime().toString(), time.getShift().getValue());
         setPlace(0, row);
         setHeader(true);
     }
 
     public ScheduleCell(LessonDto lessonDto) {
         text = lessonDto.getSubject() + "\n" + lessonDto.getGroup().getQualifier();
-        LocalDateTime current = LocalDateTime.now();
-        color = current.toLocalDate().equals(lessonDto.getDate()) ? current.isAfter(lessonDto.getStartTime()) && current.isBefore(lessonDto.getFinishTime()) ? "lightpink" : "#A0FF95" : "#9DF9F3";
+        color = isToday(lessonDto) ? isBetweenCurrentTime(lessonDto) ? "lightpink" : "#A0FF95" : "#9DF9F3";
         lesson = lessonDto;
+    }
+
+    private boolean isToday(LessonDto lessonDto){
+        LocalDateTime current = LocalDateTime.now();
+        return current.toLocalDate().equals(lessonDto.getDate());
+    }
+
+    private boolean isBetweenCurrentTime(LessonDto lessonDto){
+        LessonScheduleDto time = lessonDto.getTime();
+        LocalTime current = LocalTime.now();
+        return isToday(lessonDto) && current.isAfter(time.getStartTime()) && current.isBefore(time.getFinishTime());
     }
 
     private void setEmpty(boolean isEmpty) {

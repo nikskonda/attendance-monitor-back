@@ -15,8 +15,6 @@ public class PersonDto extends ObjectRef {
 
     private Set<ObjectRef> roles;
 
-    private ObjectRef group;
-
     public String getFullName() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(lastName).append(" ").append(firstName).append(" ").append(patronymic);

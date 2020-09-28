@@ -9,6 +9,7 @@ import com.bntu.master.attendance.monitor.impl.resolver.SubjectResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,10 @@ public class SubjectService {
     }
 
     public List<ObjectRef> findAll() {
-        return repository.findAll().stream().map(subject -> converter.convertToDto(subject)).collect(Collectors.toList());
+        return repository.findAll().stream()
+                .map(subject -> converter.convertToDto(subject))
+                .sorted(Comparator.comparing(ObjectRef::getQualifier))
+                .collect(Collectors.toList());
     }
 
 }
