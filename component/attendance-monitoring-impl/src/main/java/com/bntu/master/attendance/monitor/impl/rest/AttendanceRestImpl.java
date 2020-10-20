@@ -31,11 +31,6 @@ public class AttendanceRestImpl implements AttendanceRest {
     }
 
     @Override
-    public AttendancePage update(AttendancePage attendancePage) {
-        return service.update(attendancePage);
-    }
-
-    @Override
     public List<AttendanceCell> setValues(List<AttendanceCell> cells) {
         return service.saveAll(cells);
     }

@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
+import com.bntu.master.attendance.monitor.api.exception.EmailBusyException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
@@ -9,8 +10,8 @@ import com.bntu.master.attendance.monitor.impl.converter.PersonConverter;
 import com.bntu.master.attendance.monitor.impl.dataaccess.ParentContactRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.StudentGroupRepository;
+import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
-import com.bntu.master.attendance.monitor.impl.entity.ParentContact;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import com.bntu.master.attendance.monitor.impl.entity.StudentGroup;
@@ -18,9 +19,12 @@ import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.RoleResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +36,9 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ParentContactRepository parentContactRepository;
@@ -51,18 +58,17 @@ public class PersonService {
     @Autowired
     private GroupResolver groupResolver;
 
-    public PersonDto find(ObjectRef dto) {
-        Person person = resolver.resolve(dto);
-        return converter.convertToDto(person);
-    }
+    @Autowired
+    private UserService userService;
 
-    public Person resolve(ObjectRef dto) {
-        return resolver.resolve(dto);
+    public PersonDto find(ObjectRef dto) {
+        Person person = resolver.resolvePerson(dto);
+        return converter.convertToDto(person);
     }
 
     public PersonDto create(PersonDto dto) {
         if (!dto.isNullId()) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
         Person person = converter.convertToEntity(dto);
 
@@ -73,7 +79,7 @@ public class PersonService {
 
     public PersonDto update(Long id, PersonDto dto) {
         dto.setId(id);
-        resolver.resolve(dto);
+        resolver.resolvePerson(dto);
         Person person = converter.convertToEntity(dto);
 
         person = repository.save(person);
@@ -82,7 +88,7 @@ public class PersonService {
     }
 
     public void delete(PersonDto dto) {
-        Person person = resolver.resolve(dto);
+        Person person = resolver.resolvePerson(dto);
         repository.delete(person);
     }
 
@@ -106,11 +112,22 @@ public class PersonService {
     }
 
     public List<PersonDto> findAllByRoles(List<RoleConstant> roles) {
-        List<Role> roleList = roles.stream().map(r -> roleResolver.resolve(ObjectRef.toObjectRef(r.getRole()))).collect(Collectors.toList());
-        return repository.findAllByRolesIn(roleList).stream()
+        Set<Role> roleSet = roleResolver.resolveRefs(roles.stream().map(r -> ObjectRef.toObjectRef(r.getRole())).collect(Collectors.toSet()));
+        Set<String> emails = userRepository.findUserEmailByRolesIn(roleSet.stream().map(Role::getId).collect(Collectors.toSet()));
+        return repository.findAllByIdInOrEmailIn(Collections.emptySet(), emails).stream()
                 .map(person -> converter.convertToDto(person))
                 .sorted(Comparator.comparing(PersonDto::getFullName))
                 .collect(Collectors.toList());
+    }
+
+    public Page<PersonDto> findPageByRoles(List<RoleConstant> roles, Pageable pageable) {
+        Set<Role> roleSet = roleResolver.resolveRefs(roles.stream().map(r -> ObjectRef.toObjectRef(r.getRole())).collect(Collectors.toSet()));
+        Set<String> emails = userRepository.findUserEmailByRolesIn(roleSet.stream().map(Role::getId).collect(Collectors.toSet()));
+        return new PageImpl<>(repository.findAllByIdInOrEmailIn(Collections.emptySet(), emails, pageable).stream()
+                .map(person -> converter.convertToDto(person))
+                .collect(Collectors.toList()),
+                pageable,
+                emails.size());
     }
 
     public List<StudentDto> findStudentsByGroup(ObjectRef group) {
@@ -122,21 +139,46 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
+    public Page<StudentDto> findStudentsPageByGroup(ObjectRef group, Pageable pageable) {
+        Group gr = groupResolver.resolve(group);
+        Set<StudentGroup> studentGroup = studentGroupRepository.findAllByGroup(gr);
+        return new PageImpl<>(studentGroup.stream()
+                .map(sg -> converter.convertToDto(sg.getStudent(), gr))
+                .sorted(Comparator.comparing(PersonDto::getFullName))
+                .collect(Collectors.toList()),
+                pageable,
+                repository.count());
+    }
+
     public StudentDto createStudent(StudentDto studentDto) {
+        Person stud = create(converter.convertToEntity(studentDto));
         Group group = groupResolver.resolve(studentDto.getGroup());
-        Person stud = converter.convertToEntity(studentDto);
-        Set<Role> roles = roleResolver.resolve(stud.getRoles());
-        stud.setRoles(roles);
-        stud = repository.save(stud);
         studentGroupRepository.save(new StudentGroup(stud, group));
+        userService.create(stud.getEmail(), RoleConstant.STUDENT);
         return converter.convertToDto(stud, group);
+    }
+
+    private Person create(Person person) {
+        if (repository.findByEmail(person.getEmail()).isPresent()) {
+            throw new EmailBusyException();
+        }
+        return repository.save(person);
+    }
+
+    public PersonDto createProf(PersonDto profDto) {
+        Person prof = create(converter.convertToEntity(profDto));
+        userService.create(prof.getEmail(), RoleConstant.PROFESSOR);
+        return converter.convertToDto(prof);
     }
 
     public StudentDto updateStudent(Long id, StudentDto studentDto) {
         Group group = groupResolver.resolve(studentDto.getGroup());
-        Person person = resolver.resolve(ObjectRef.toObjectRef(id));
-
+        Person person = resolver.resolvePerson(ObjectRef.toObjectRef(id));
         Person updatedStud = converter.convertToEntity(studentDto);
+
+        if (!person.getEmail().equals(updatedStud.getEmail())) {
+            userService.updateEmail(person.getEmail(), updatedStud.getEmail());
+        }
         updatedStud.setId(id);
         updatedStud = repository.save(updatedStud);
 
@@ -148,13 +190,24 @@ public class PersonService {
         return converter.convertToDto(updatedStud, group);
     }
 
-    public void deleteStudent(Long id) {
-        Person stud = resolver.resolve(ObjectRef.toObjectRef(id));
-        StudentGroup studentGroup = studentGroupRepository.findFirstByStudent(stud);
-        studentGroupRepository.delete(studentGroup);
-        repository.delete(stud);
+    public PersonDto updateProfessor(Long id, PersonDto personDto) {
+        Person person = resolver.resolvePerson(ObjectRef.toObjectRef(id));
+        Person updatedProf = converter.convertToEntity(personDto);
+        if (!person.getEmail().equals(updatedProf.getEmail())) {
+            userService.updateEmail(person.getEmail(), updatedProf.getEmail());
+        }
+        updatedProf.setId(id);
+        updatedProf = repository.save(updatedProf);
+        return converter.convertToDto(updatedProf);
     }
 
-
-
+    public void deletePerson(Long id) {
+        Person person = resolver.resolvePerson(ObjectRef.toObjectRef(id));
+        if (resolver.resolveUser(ObjectRef.toObjectRef(person.getEmail())).getRoles().contains(roleResolver.resolve(RoleConstant.STUDENT))) {
+            StudentGroup studentGroup = studentGroupRepository.findFirstByStudent(person);
+            studentGroupRepository.delete(studentGroup);
+        }
+        repository.delete(person);
+        userService.delete(person.getEmail());
+    }
 }

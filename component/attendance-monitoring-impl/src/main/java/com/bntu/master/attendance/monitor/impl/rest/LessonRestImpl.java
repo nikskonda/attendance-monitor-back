@@ -1,15 +1,17 @@
 package com.bntu.master.attendance.monitor.impl.rest;
 
-import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleCell;
+import com.bntu.master.attendance.monitor.api.exception.AccessDeniedException;
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
-import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleGrid;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleList;
 import com.bntu.master.attendance.monitor.api.rest.LessonRest;
 import com.bntu.master.attendance.monitor.impl.service.LessonScheduleService;
 import com.bntu.master.attendance.monitor.impl.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -40,8 +42,30 @@ public class LessonRestImpl implements LessonRest {
     }
 
     @Override
-    public ScheduleList findGridByDateRange(LocalDate startDate, LocalDate finalDate, Long personId) {
-        return service.findGridByDateRange(startDate, finalDate, personId);
+    public Page<LessonDto> findPageByDateRange(LocalDate startDate, LocalDate finalDate, Pageable pageable) {
+        return service.findPageByDateRange(startDate, finalDate, pageable);
+    }
+
+    @Override
+    public ScheduleList findGridByDateRange(LocalDate startDate, LocalDate finalDate, Long personId, Authentication authentication) {
+        if (authentication != null) {
+            if (personId != null &&
+                    authentication.getAuthorities()
+                            .stream()
+                            .findFirst()
+                            .filter(a -> "ADMIN".equals(a.getAuthority()))
+                            .isPresent()) {
+                return service.findGridByDateRange(startDate, finalDate, personId);
+            } else {
+                return service.findGridByDateRange(startDate, finalDate, authentication.getName());
+            }
+        }
+        throw new AccessDeniedException();
+    }
+
+    @Override
+    public List<LessonDto> createSeries(Long inWeek, Long count, LessonDto lesson) {
+        return service.createSeries(lesson, inWeek, count);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.bntu.master.attendance.monitor.impl.resolver;
 
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,10 @@ public class RoleResolver {
     @Autowired
     private RoleRepository repository;
 
+    public Role resolve(RoleConstant role) {
+        return resolve(ObjectRef.toObjectRef(role.getRole()));
+    }
+
     public Role resolve(ObjectRef objectRef) {
         if (objectRef.isNullable()) {
             throw new NotFoundException();
@@ -27,19 +32,19 @@ public class RoleResolver {
                 : repository.findById(objectRef.getId()).orElseThrow(NotFoundException::new);
     }
 
-    public Set<Role> resolve(Collection<Role> roles) {
+    public Set<Role> resolveRefs(Collection<ObjectRef> roles) {
         List<Long> byId = new ArrayList<>();
         List<String> byQualifier = new ArrayList<>();
-        for (Role r : roles) {
+        for (ObjectRef r : roles) {
             if (r.getId()!=null) {
                 byId.add(r.getId());
             } else {
-                if (StringUtils.isNotBlank(r.getName())){
-                    byQualifier.add(r.getName());
+                if (StringUtils.isNotBlank(r.getQualifier())){
+                    byQualifier.add(r.getQualifier());
                 }
             }
         }
-        return repository.findAllByIdInAndNameIn(byId, byQualifier);
+        return repository.findAllByIdInOrNameIn(byId, byQualifier);
     }
 
 }

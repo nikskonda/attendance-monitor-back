@@ -15,9 +15,23 @@ import java.util.List;
 public interface ReportRest {
 
     @GetMapping("/byStudentForDateRange")
-    List<ReportByStudentAndSubjects> findDataByStudentForDateRange(
+    List<List<String>> findGridByStudentForDateRange(
             @RequestParam Long studentId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
+
+    @GetMapping("/byStudentDetailsForDateRange")
+    List<List<String>> findGridByStudentDetailsForDateRange(
+            @RequestParam Long studentId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
+
+    @GetMapping("/byGroupForDateRange")
+    List<List<String>> findGridByGroupForDateRange(
+            @RequestParam Long groupId,
+            @RequestParam Long subjectId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
+
 
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
-@Repository
 public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long> {
 
     Set<StudentGroup> findAllByGroup(Group group);

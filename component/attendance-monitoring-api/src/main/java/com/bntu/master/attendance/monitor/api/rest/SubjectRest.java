@@ -2,6 +2,8 @@ package com.bntu.master.attendance.monitor.api.rest;
 
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -35,5 +38,11 @@ public interface SubjectRest {
 
     @GetMapping("/types")
     SubjectTypeConstant[] getSubjectTypes();
+
+    @GetMapping("/byGroup")
+    List<ObjectRef> findByGroup(@RequestParam Long groupId);
+
+    @GetMapping("/page")
+    Page<ObjectRef> findByPage(Pageable pageable);
 
 }

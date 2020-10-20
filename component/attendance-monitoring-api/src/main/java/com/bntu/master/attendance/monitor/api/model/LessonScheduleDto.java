@@ -8,7 +8,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.time.LocalTime;
 import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 public class LessonScheduleDto extends ObjectRef {
 

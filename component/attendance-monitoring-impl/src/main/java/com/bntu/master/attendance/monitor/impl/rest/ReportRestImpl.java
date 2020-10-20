@@ -21,7 +21,17 @@ public class ReportRestImpl implements ReportRest {
     private ReportService service;
 
     @Override
-    public List<ReportByStudentAndSubjects> findDataByStudentForDateRange(Long studentId, LocalDate startDate, LocalDate endDate) {
+    public List<List<String>> findGridByStudentForDateRange(Long studentId, LocalDate startDate, LocalDate endDate) {
         return service.getDataByStudentInDateRange(startDate, endDate, ObjectRef.toObjectRef(studentId));
+    }
+
+    @Override
+    public List<List<String>> findGridByStudentDetailsForDateRange(Long studentId, LocalDate startDate, LocalDate endDate) {
+        return service.getDataByStudentDetailInDateRange(startDate, endDate, ObjectRef.toObjectRef(studentId));
+    }
+
+    @Override
+    public List<List<String>> findGridByGroupForDateRange(Long groupId, Long subjectId, LocalDate startDate, LocalDate endDate) {
+        return service.findGridByGroupForDateRange(ObjectRef.toObjectRef(groupId), ObjectRef.toObjectRef(subjectId), startDate, endDate);
     }
 }

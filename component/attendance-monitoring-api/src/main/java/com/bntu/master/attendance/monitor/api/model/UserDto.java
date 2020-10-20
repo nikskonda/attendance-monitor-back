@@ -1,5 +1,6 @@
 package com.bntu.master.attendance.monitor.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 @Data
 public class UserDto extends ObjectRef implements UserDetails {
 
+    private String fullName;
+    private boolean mustUpdatePassword;
     private String password;
     private Set<ObjectRef> roles;
 
@@ -23,6 +26,7 @@ public class UserDto extends ObjectRef implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

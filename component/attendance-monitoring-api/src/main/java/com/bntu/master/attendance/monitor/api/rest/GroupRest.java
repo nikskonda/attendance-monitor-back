@@ -1,6 +1,9 @@
 package com.bntu.master.attendance.monitor.api.rest;
 
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
+import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,9 @@ public interface GroupRest {
 
     @GetMapping
     List<GroupDto> findAll();
+
+    @GetMapping("/page")
+    Page<GroupDto> findByPage(Pageable pageable);
 
     @PostMapping
     GroupDto create(@RequestBody GroupDto group);

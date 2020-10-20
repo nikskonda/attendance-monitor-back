@@ -5,7 +5,10 @@ import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleGrid;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleList;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,13 +35,23 @@ public interface LessonRest {
     @GetMapping("/findByDateRange")
     List<LessonDto> findByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate finalDate);
 
+    @GetMapping("/findPageByDateRange")
+    Page<LessonDto> findPageByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate finalDate, Pageable pageable);
+
+
     @GetMapping("/findGridByDateRange")
     ScheduleList findGridByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate finalDate,
-                                     @RequestParam(required = false) Long personId);
+                                     @RequestParam(required = false) Long personId,
+                                     Authentication authentication);
 
     @PostMapping
     LessonDto create(@RequestBody LessonDto lesson);
+
+    @PostMapping("/series")
+    List<LessonDto> createSeries(@RequestParam Long inWeek,
+                     @RequestParam Long count,
+                     @RequestBody LessonDto lesson);
 
     @PutMapping("/{id}")
     LessonDto update(@PathVariable Long id,

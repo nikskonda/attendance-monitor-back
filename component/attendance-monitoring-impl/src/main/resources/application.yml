@@ -3,11 +3,10 @@ server:
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    #    url: jdbc:postgresql://lib-db:5432/library
-    url: jdbc:postgresql://localhost:5432/attendance_monitor
+#    url: jdbc:postgresql://localhost:5432/attendance_monitor
+    url: jdbc:postgresql://db:5432/attendance_monitor
     username: postgres
     password: postgres
-#    password: password
     driver-class-name: org.postgresql.Driver
     hikari:
       idle-timeout: 10000
@@ -24,5 +23,8 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+
+#bntu.attendance.monitor@gmail.com
+#    qweRTY123$%^
 
 

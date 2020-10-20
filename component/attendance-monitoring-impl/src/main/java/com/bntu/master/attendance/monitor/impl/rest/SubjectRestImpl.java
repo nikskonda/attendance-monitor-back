@@ -7,6 +7,8 @@ import com.bntu.master.attendance.monitor.api.rest.SubjectRest;
 import com.bntu.master.attendance.monitor.impl.service.SpecialityService;
 import com.bntu.master.attendance.monitor.impl.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -45,5 +47,15 @@ public class SubjectRestImpl implements SubjectRest {
     @Override
     public SubjectTypeConstant[] getSubjectTypes() {
         return SubjectTypeConstant.values();
+    }
+
+    @Override
+    public List<ObjectRef> findByGroup(Long groupId) {
+        return service.findByGroup(ObjectRef.toObjectRef(groupId));
+    }
+
+    @Override
+    public Page<ObjectRef> findByPage(Pageable pageable) {
+        return service.findByPage(pageable);
     }
 }

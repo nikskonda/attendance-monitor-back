@@ -33,9 +33,6 @@ public interface AttendanceRest {
                         @RequestParam Set<SubjectTypeConstant> subjectType);
 
 
-    @PutMapping
-    AttendancePage update(@RequestBody AttendancePage attendancePage);
-
     @PostMapping
     List<AttendanceCell> setValues(@RequestBody List<AttendanceCell> cells);
 

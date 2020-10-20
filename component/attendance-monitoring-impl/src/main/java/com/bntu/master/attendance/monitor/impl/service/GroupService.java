@@ -1,6 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.converter.GroupConverter;
@@ -10,6 +10,9 @@ import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +36,7 @@ public class GroupService {
 
     public GroupDto find(ObjectRef dto) {
         if (dto.isNullId()) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
         Group group = resolver.resolve(dto);
         return converter.convertToDto(group);
@@ -41,7 +44,7 @@ public class GroupService {
 
     public GroupDto create(GroupDto dto) {
         if (!dto.isNullId() && dto.isNullQualifier()) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
 
         Speciality speciality = specialityResolver.resolve(dto.getSpeciality());
@@ -65,6 +68,15 @@ public class GroupService {
 
     public List<GroupDto> findAll() {
         return repository.findAll().stream().map(group -> converter.convertToDto(group)).collect(Collectors.toList());
+    }
+
+    public Page<GroupDto> findByPage(Pageable pageable){
+        return new PageImpl<>(repository.findAll(pageable)
+                .stream()
+                .map(group -> converter.convertToDto(group))
+                .collect(Collectors.toList()),
+                pageable,
+                repository.count());
     }
 
 }

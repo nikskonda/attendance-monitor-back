@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     private static final String CLIEN_ID = "attendance-monitor-client";
-    private static final String CLIENT_SECRET = "$2a$04$TlIII2DueoYOO9tFJnoyneAX0u4Vq0AV2tgGuZKNS5b0nipuUPZom";
+    private static final String CLIENT_SECRET = "$2a$04$aImNOI9X97GZxI4NsPqrDuhvacih1MWgNFBr/n2bmdXEwmVRqYByi";
     private static final String GRANT_TYPE = "password";
     private static final String AUTHORIZATION_CODE = "authorization_code";
     private static final String REFRESH_TOKEN = "refresh_token";

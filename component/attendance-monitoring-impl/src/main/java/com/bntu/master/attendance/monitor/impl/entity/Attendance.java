@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Attendance {
 
@@ -35,5 +34,34 @@ public class Attendance {
     @JoinColumn
     private Person professor;
     private LocalDateTime dateTime;
+    private boolean isGoodReason = false;
 
+    public Attendance(Long id, Lesson lesson, Person student, AttendanceValue value, Person professor, LocalDateTime dateTime, boolean isGoodReason) {
+        this.id = id;
+        this.lesson = lesson;
+        this.student = student;
+        this.value = value;
+        this.professor = professor;
+        this.dateTime = dateTime;
+        this.isGoodReason = !AttendanceValue.COME.equals(value) && isGoodReason;
+    }
+
+    public void setValue(AttendanceValue value) {
+        this.value = value;
+        if (AttendanceValue.COME.equals(value)) {
+            setGoodReason(false);
+        }
+    }
+
+    public void setGoodReason(boolean goodReason) {
+        if (AttendanceValue.COME.equals(value)) {
+            isGoodReason = false;
+        } else {
+            isGoodReason = goodReason;
+        }
+    }
+
+    public boolean isGoodReason() {
+        return isGoodReason;
+    }
 }

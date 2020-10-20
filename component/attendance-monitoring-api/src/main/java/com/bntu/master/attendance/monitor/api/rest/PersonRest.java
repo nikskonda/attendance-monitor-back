@@ -3,6 +3,8 @@ package com.bntu.master.attendance.monitor.api.rest;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.api.model.StudentDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,8 @@ public interface PersonRest {
     @GetMapping("/byRoles")
     List<PersonDto> findAllByRole(@RequestParam List<RoleConstant> roles);
 
+    @GetMapping("/pageByRoles")
+    Page<PersonDto> findPageByRole(@RequestParam List<RoleConstant> roles, Pageable pageable);
 
 
     @PostMapping
@@ -38,20 +42,25 @@ public interface PersonRest {
     PersonDto update(@PathVariable Long id,
                      @RequestBody PersonDto person);
 
-    @DeleteMapping(("/{id}"))
-    void delete(@PathVariable Long id);
-
-
     @GetMapping("/students")
     List<StudentDto> findStudentsByGroup(@RequestParam Long groupId);
+
+    @GetMapping("/students/byPage")
+    Page<StudentDto> findStudentsPageByGroup(@RequestParam Long groupId, Pageable pageable);
 
     @PostMapping("/student")
     StudentDto createStudent(@RequestBody StudentDto studentDto);
 
+    @PostMapping("/professor")
+    PersonDto createProfessor(@RequestBody PersonDto personDto);
+
     @PutMapping("/student/{id}")
     StudentDto updateStudent(@PathVariable Long id, @RequestBody StudentDto studentDto);
 
-    @DeleteMapping("/student/{id}")
-    void deleteStudent(@PathVariable Long id);
+    @PutMapping("/professor/{id}")
+    PersonDto updateProfessor(@PathVariable Long id, @RequestBody PersonDto personDto);
 
+    @DeleteMapping("/{id}")
+    void deletePerson(@PathVariable Long id);
 }
+

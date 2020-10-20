@@ -4,6 +4,8 @@ import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.rest.SpecialityRest;
 import com.bntu.master.attendance.monitor.impl.service.SpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,6 +24,11 @@ public class SpecialityRestImpl implements SpecialityRest {
     @Override
     public List<ObjectRef> findAll() {
         return service.findAll();
+    }
+
+    @Override
+    public Page<ObjectRef> findByPage(Pageable pageable) {
+        return service.findPage(pageable);
     }
 
     @Override

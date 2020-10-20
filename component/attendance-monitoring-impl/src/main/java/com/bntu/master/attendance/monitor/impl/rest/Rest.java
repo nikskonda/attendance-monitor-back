@@ -28,4 +28,9 @@ public class Rest {
         generateService.create();
     }
 
+    @GetMapping("/generateBase")
+    public void generateBase() {
+        generateService.createBase();
+    }
+
 }

@@ -5,6 +5,7 @@ import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class AttendanceGrid {
 
     private void setLessonHeader(Set<LessonDto> lessonHeader) {
         this.lessonHeader = new ArrayList<>(lessonHeader);
-        this.lessonHeader.sort(Comparator.comparing(l -> l.getTime().getStartTime()));
+        this.lessonHeader.sort(Comparator.comparing(l -> LocalDateTime.of(l.getDate(), l.getTime().getStartTime())));
         columns = this.lessonHeader.size();
         lessonIndexMap = new HashMap<>();
         for (int i = 0; i < this.lessonHeader.size(); i++) {
@@ -57,7 +58,7 @@ public class AttendanceGrid {
         }
     }
 
-    public void setCell(ObjectRef person, ObjectRef lesson, AttendanceValue value) {
+    public void setCell(ObjectRef person, ObjectRef lesson, AttendanceValue value, boolean isGoodReason) {
         int rowIndex = personIndexMap.get(person.getId());
         int colIndex = lessonIndexMap.get(lesson.getId());
         AttendanceCell cell = new AttendanceCell();
@@ -66,6 +67,7 @@ public class AttendanceGrid {
         cell.setValue(value);
         cell.setText(cell.getValue().getText());
         cell.setPosition(rowIndex, colIndex);
+        cell.setGoodReason(isGoodReason);
         cells[rowIndex][colIndex] = cell;
     }
 
@@ -81,16 +83,20 @@ public class AttendanceGrid {
 
         for (AttendanceCell[] row : cells) {
             rowIndex++;
-            ObjectRef person = personHeader.get(rowIndex - 1);
-            toReturn.add(new AttendanceCell(personHeader.get(rowIndex - 1)));
+            PersonDto person = personHeader.get(rowIndex - 1);
+            toReturn.add(new AttendanceCell(person));
 
+            colIndex = 0;
             for (AttendanceCell c : row) {
                 if (c != null) {
-
+                    if (c.getValue() == null || AttendanceValue.COME.equals(c.getValue())) {
+                        c = AttendanceCell.empty(lessonHeader.get(colIndex), person);
+                    }
                 } else {
-                    c = AttendanceCell.empty();
+                    c = AttendanceCell.empty(lessonHeader.get(colIndex), person);
                 }
                 toReturn.add(c);
+                colIndex++;
             }
         }
         return toReturn;

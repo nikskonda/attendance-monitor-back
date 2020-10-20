@@ -1,13 +1,17 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
-import com.bntu.master.attendance.monitor.api.exception.Exception;
+import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +26,7 @@ public class SpecialityService {
 
     public ObjectRef find(ObjectRef dto) {
         if (dto.isNullable()) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
         Speciality speciality = resolver.resolve(dto);
         return ObjectRef.toObjectRef(speciality.getId(), speciality.getName());
@@ -30,7 +34,7 @@ public class SpecialityService {
 
     public ObjectRef create(ObjectRef dto) {
         if (dto.isNullable() || (!dto.isNullId() && dto.isNullQualifier())) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
 
         Speciality speciality = new Speciality();
@@ -43,7 +47,7 @@ public class SpecialityService {
     public ObjectRef update(Long id, ObjectRef dto) {
         dto.setId(id);
         if (dto.isNullAnyField()) {
-            throw new Exception();
+            throw new AttendanceMonitorException();
         }
         Speciality speciality = resolver.resolve(dto);
         speciality.setName(dto.getQualifier());
@@ -59,6 +63,15 @@ public class SpecialityService {
 
     public List<ObjectRef> findAll() {
         return repository.findAll().stream().map(spec -> ObjectRef.toObjectRef(spec.getId(), spec.getName())).collect(Collectors.toList());
+    }
+
+    public Page<ObjectRef> findPage(Pageable pageable) {
+        return new PageImpl<>(repository.findAll()
+                .stream()
+                .map(spec -> ObjectRef.toObjectRef(spec.getId(), spec.getName()))
+                .collect(Collectors.toList()),
+                pageable,
+                repository.count());
     }
 
 }

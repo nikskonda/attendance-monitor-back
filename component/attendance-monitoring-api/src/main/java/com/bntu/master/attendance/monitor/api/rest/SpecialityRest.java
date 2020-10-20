@@ -1,6 +1,8 @@
 package com.bntu.master.attendance.monitor.api.rest;
 
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,9 @@ public interface SpecialityRest {
 
     @GetMapping
     List<ObjectRef> findAll();
+
+    @GetMapping("/page")
+    Page<ObjectRef> findByPage(Pageable pageable);
 
     @PostMapping
     ObjectRef create(@RequestBody ObjectRef speciality);

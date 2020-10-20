@@ -5,17 +5,17 @@ import com.bntu.master.attendance.monitor.impl.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query("select p.roles from Person p where p.email=:email")
-    Set<Role> findRolesByEmail(@Param("email") String email);
+    User findFirstByEmail(String email);
+
+    @Query(value = "select email from person_roles pr where pr.role_id In (?1)", nativeQuery = true)
+    Set<String> findUserEmailByRolesIn(Set<Long> roles);
 
 }

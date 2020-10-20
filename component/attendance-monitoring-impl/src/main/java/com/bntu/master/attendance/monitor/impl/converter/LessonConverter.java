@@ -8,7 +8,6 @@ import com.bntu.master.attendance.monitor.impl.entity.Lesson;
 import com.bntu.master.attendance.monitor.impl.entity.LessonSchedule;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

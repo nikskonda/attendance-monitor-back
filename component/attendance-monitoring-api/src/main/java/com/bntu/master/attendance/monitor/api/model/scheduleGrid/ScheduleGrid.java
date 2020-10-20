@@ -64,7 +64,10 @@ public class ScheduleGrid {
         int rowIndex = 0;
         int colIndex = 0;
 
-        toReturn.add(ScheduleCell.empty(colIndex++, rowIndex));
+        ScheduleCell cell = new ScheduleCell();
+        cell.setText("Время (смена)");
+        cell.setHeader(true);
+        toReturn.add(cell);
         for (LocalDate date : header) {
             toReturn.add(new ScheduleCell(date, colIndex++));
         }

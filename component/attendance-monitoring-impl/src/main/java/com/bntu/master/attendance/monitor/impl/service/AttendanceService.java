@@ -18,6 +18,7 @@ import com.bntu.master.attendance.monitor.impl.dataaccess.AttendanceRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Attendance;
+import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Lesson;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
@@ -77,7 +78,7 @@ public class AttendanceService {
         List<Attendance> toSave = new ArrayList<>();
         for (AttendanceCell cell : cells) {
             Lesson lesson = lessonResolver.resolve(cell.getLesson());
-            Person student = personResolver.resolveByRole(cell.getPerson(), RoleConstant.STUDENT);
+            Person student = personResolver.resolvePersonByRole(cell.getPerson(), RoleConstant.STUDENT);
             Attendance fromDb = repository.findFirstByStudentAndLesson(student, lesson);
 
             Attendance attendance = new Attendance();
@@ -89,63 +90,37 @@ public class AttendanceService {
             attendance.setProfessor(lesson.getProfessor());
             attendance.setLesson(lesson);
             attendance.setValue(AttendanceValue.find(cell.getText()));
+            attendance.setGoodReason(cell.isGoodReason());
             toSave.add(attendance);
         }
         repository.saveAll(toSave);
         return Collections.EMPTY_LIST; //ToDO
     }
 
-    public AttendancePage update(AttendancePage attendancePage) {
-        List<Attendance> attendances = new ArrayList<>();
-        Set<Lesson> lessons = new HashSet<>();
-        Set<Person> students = new HashSet<>();
-        for (ObjectRef lessonRef : attendancePage.getMap().keySet()) {
-            Lesson lesson = lessonResolver.resolve(lessonRef);
-            lessons.add(lesson);
-            Map<ObjectRef, AttendanceValue> attendanceByStudents = attendancePage.getMap().get(lessonRef);
-            for (ObjectRef studRef : attendanceByStudents.keySet()) {
-                Person student = personResolver.resolveByRole(studRef, RoleConstant.STUDENT);
-                students.add(student);
-
-                Attendance attendance = new Attendance();
-                attendance.setDateTime(LocalDateTime.now());
-                attendance.setStudent(student);
-                attendance.setProfessor(lesson.getProfessor());
-                attendance.setLesson(lesson);
-                attendance.setValue(attendanceByStudents.get(studRef));
-                attendances.add(attendance);
-            }
-        }
-        repository.deleteByStudentInAndLessonIn(students, lessons);
-        attendances = repository.saveAll(attendances);
-        return convert(attendances);
-    }
-
-//    public AttendancePage getAttendanceForGroup(ObjectRef studentGroup, Long personId, DateSpan dateSpan) {
-//        List<Lesson> lessons = lessonRepository.findAllByDateBetween(dateSpan.getStartDate(), dateSpan.getFinishDate());
-//        List<Attendance> attendances = repository.findAllByStudentGroupKeyAndLessonIn(groupResolver.resolve(studentGroup).getKey(), lessons);
-//        return convert(attendances);
-//    }
-
     public AttendanceList getAttendanceForGroup(ObjectRef studentGroup, DateSpan dateSpan, ObjectRef subject, Set<SubjectTypeConstant> subjectType) {
-        Set<LessonDto> lessons = lessonService.findAllByDateBetweenAndSubjectAndSubjectTypeIn(dateSpan.getStartDate(), dateSpan.getFinishDate(), subjectResolver.resolve(subject), subjectType);
+        Set<LessonDto> lessons = lessonService.findAllByDateBetweenAndGroupAndSubjectAndSubjectTypeIn(dateSpan.getStartDate(), dateSpan.getFinishDate(), groupResolver.resolve(studentGroup), subjectResolver.resolve(subject), subjectType);
 
         List<PersonDto> students = new ArrayList<>(personService.findStudentsByGroup(studentGroup));
 
+        Set<AttendanceValue> values = new HashSet<>();
+        Collections.addAll(values, AttendanceValue.ONE_HOUR, AttendanceValue.TWO_HOUR);
+
         AttendanceGrid grid = new AttendanceGrid(lessons, students);
-        List<Attendance> attendances = repository.findAllByStudentInAndLessonIn(
+        List<Attendance> attendances = repository.findAllByStudentInAndLessonInAndValueIn(
                 students.stream()
                         .map(st -> personConverter.convertToEntity(st))
                         .collect(Collectors.toSet()),
                 lessons.stream()
                         .map(l -> lessonConverter.convertToEntity(l, null, null))
-                        .collect(Collectors.toSet()));
+                        .collect(Collectors.toSet()),
+                values);
         attendances
                 .forEach(attendance ->
                         grid.setCell(
                                 ObjectRef.toObjectRef(attendance.getStudent().getId()),
                                 ObjectRef.toObjectRef(attendance.getLesson().getId()),
-                                attendance.getValue()));
+                                attendance.getValue(),
+                                attendance.isGoodReason()));
 
         LessonDto lessonDto = null;
         if (!lessons.isEmpty()) {

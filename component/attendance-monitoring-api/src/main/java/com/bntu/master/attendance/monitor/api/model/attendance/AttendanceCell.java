@@ -17,6 +17,7 @@ public class AttendanceCell {
     private String text;
 //    private String color = "#9DF9F3";
     private AttendanceValue value;
+    private boolean isGoodReason;
     private ObjectRef lesson;
     private ObjectRef person;
     private int row;
