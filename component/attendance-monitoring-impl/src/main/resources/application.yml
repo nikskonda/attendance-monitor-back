@@ -3,8 +3,9 @@ server:
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-#    url: jdbc:postgresql://localhost:5432/attendance_monitor
-    url: jdbc:postgresql://db:5432/attendance_monitor
+    url: jdbc:postgresql://localhost:5432/attendance_monitor
+#    url: jdbc:postgresql://db:5432/attendance_monitor
+#    url: jdbc:postgresql://localhost:5434/attendance_monitor
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -16,7 +17,7 @@ spring:
         lob.non_contextual_creation: true
       format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
     hibernate.ddl-auto: update
   jackson:
     default-property-inclusion: non_empty
