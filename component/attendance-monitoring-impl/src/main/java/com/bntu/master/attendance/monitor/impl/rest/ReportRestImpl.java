@@ -1,14 +1,9 @@
 package com.bntu.master.attendance.monitor.impl.rest;
 
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
-import com.bntu.master.attendance.monitor.api.model.report.ReportByStudentAndSubjects;
 import com.bntu.master.attendance.monitor.api.rest.ReportRest;
-import com.bntu.master.attendance.monitor.impl.service.AttendanceService;
-import com.bntu.master.attendance.monitor.impl.service.GenerateService;
 import com.bntu.master.attendance.monitor.impl.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -21,17 +16,32 @@ public class ReportRestImpl implements ReportRest {
     private ReportService service;
 
     @Override
-    public List<List<String>> findGridByStudentForDateRange(Long studentId, LocalDate startDate, LocalDate endDate) {
-        return service.getDataByStudentInDateRange(startDate, endDate, ObjectRef.toObjectRef(studentId));
+    public List<List<String>> findGridForStudentReport(Long studentId, LocalDate startDate, LocalDate endDate) {
+        return service.findGridForStudentReport(startDate, endDate, ObjectRef.toObjectRef(studentId));
     }
 
     @Override
-    public List<List<String>> findGridByStudentDetailsForDateRange(Long studentId, LocalDate startDate, LocalDate endDate) {
-        return service.getDataByStudentDetailInDateRange(startDate, endDate, ObjectRef.toObjectRef(studentId));
+    public List<List<String>> findGridForStudentDetailsReport(Long studentId, LocalDate startDate, LocalDate endDate) {
+        return service.findGridForStudentDetailsReport(startDate, endDate, ObjectRef.toObjectRef(studentId));
     }
 
     @Override
-    public List<List<String>> findGridByGroupForDateRange(Long groupId, Long subjectId, LocalDate startDate, LocalDate endDate) {
-        return service.findGridByGroupForDateRange(ObjectRef.toObjectRef(groupId), ObjectRef.toObjectRef(subjectId), startDate, endDate);
+    public List<List<String>> findGridForStudentAndSubjectDetailsReport(Long studentId, Long subjectId, LocalDate startDate, LocalDate endDate) {
+        return service.findGridForStudentAndSubjectDetailsReport(startDate, endDate, ObjectRef.toObjectRef(studentId), ObjectRef.toObjectRef(subjectId));
+    }
+
+    @Override
+    public List<List<String>> findGridForGroupReport(Long groupId, Long subjectId, LocalDate startDate, LocalDate endDate) {
+        return service.findGridForGroupReport(ObjectRef.toObjectRef(groupId), ObjectRef.toObjectRef(subjectId), startDate, endDate);
+    }
+
+    @Override
+    public List<List<String>> findGridForStudentReport(Long groupId) {
+        return service.findGridForStudentReport(groupId);
+    }
+
+    @Override
+    public List<List<String>> findGridForProfessorReport() {
+        return service.findGridForProfessorReport();
     }
 }

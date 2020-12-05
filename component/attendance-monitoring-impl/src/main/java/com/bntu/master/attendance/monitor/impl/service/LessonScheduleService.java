@@ -20,12 +20,12 @@ public class LessonScheduleService {
 
     public List<LessonScheduleDto> updateAll(List<LessonScheduleDto> dtos) {
         repository.deleteAll();
-        repository.saveAll(converter.convertToEntityList(dtos));
+//        repository.saveAll(converter.convertToEntityList(dtos));
         return findAll();
     }
 
     public List<LessonScheduleDto> findAll() {
-        List<LessonScheduleDto> result = converter.convertToDtoList(repository.findAll());
+        List<LessonScheduleDto> result = converter.convertToDtos(repository.findAll());
         result.sort(Comparator.comparingLong(LessonScheduleDto::getOrder));
         return result;
     }

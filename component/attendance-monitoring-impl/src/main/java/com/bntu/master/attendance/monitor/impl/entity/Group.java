@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +20,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "student_group")
-public class Group {
+public class Group implements Base {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "group_generator")
     private Long id;

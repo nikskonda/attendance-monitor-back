@@ -1,8 +1,10 @@
 package com.bntu.master.attendance.monitor.impl.rest;
 
 import com.bntu.master.attendance.monitor.api.exception.AccessDeniedException;
+import com.bntu.master.attendance.monitor.api.exception.UnsupportedMethodException;
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
+import com.bntu.master.attendance.monitor.api.model.LessonSeries;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleList;
 import com.bntu.master.attendance.monitor.api.rest.LessonRest;
@@ -47,7 +49,7 @@ public class LessonRestImpl implements LessonRest {
     }
 
     @Override
-    public ScheduleList findGridByDateRange(LocalDate startDate, LocalDate finalDate, Long personId, Authentication authentication) {
+    public ScheduleList findGridByDateRange(LocalDate startDate, LocalDate finalDate, Long personId, boolean topDateHeader, Authentication authentication) {
         if (authentication != null) {
             if (personId != null &&
                     authentication.getAuthorities()
@@ -55,27 +57,32 @@ public class LessonRestImpl implements LessonRest {
                             .findFirst()
                             .filter(a -> "ADMIN".equals(a.getAuthority()))
                             .isPresent()) {
-                return service.findGridByDateRange(startDate, finalDate, personId);
+                return service.findGridByDateRange(startDate, finalDate, personId, topDateHeader);
             } else {
-                return service.findGridByDateRange(startDate, finalDate, authentication.getName());
+                return service.findGridByDateRange(startDate, finalDate, authentication.getName(), topDateHeader);
             }
         }
         throw new AccessDeniedException();
     }
 
     @Override
-    public List<LessonDto> createSeries(Long inWeek, Long count, LessonDto lesson) {
-        return service.createSeries(lesson, inWeek, count);
+    public List<LessonDto> createSeries(LessonSeries lessonSeries) {
+        return service.createSeries(lessonSeries);
     }
 
     @Override
-    public LessonDto create(LessonDto lesson) {
-        return service.create(lesson);
+    public void deleteSeries(LessonSeries lessonSeries) {
+        service.deleteSeries(lessonSeries);
     }
 
     @Override
-    public LessonDto update(Long id, LessonDto lesson) {
-        return service.update(id, lesson);
+    public LessonDto create(LessonDto dto) {
+        return service.create(dto);
+    }
+
+    @Override
+    public LessonDto update(Long id, LessonDto dto) {
+        return service.update(id, dto);
     }
 
     @Override
@@ -91,5 +98,10 @@ public class LessonRestImpl implements LessonRest {
     @Override
     public List<LessonScheduleDto> updateLessonScheduling(List<LessonScheduleDto> dtoList) {
         return lessonScheduleService.updateAll(dtoList);
+    }
+
+    @Override
+    public Page<LessonDto> findByPage(Pageable pageable) {
+        throw new UnsupportedMethodException();
     }
 }

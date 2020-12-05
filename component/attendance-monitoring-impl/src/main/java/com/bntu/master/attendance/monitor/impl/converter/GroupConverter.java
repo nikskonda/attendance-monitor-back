@@ -1,5 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.converter;
 
+import com.bntu.master.attendance.monitor.api.exception.UnsupportedMethodException;
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
@@ -7,7 +8,7 @@ import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GroupConverter {
+public class GroupConverter extends AbstractListConverter<Group, GroupDto> {
 
     public Group convertToEntity(GroupDto dto, Speciality speciality) {
         Group entity = new Group();
@@ -23,5 +24,10 @@ public class GroupConverter {
         dto.setQualifier(entity.getKey());
         dto.setSpeciality(ObjectRef.toObjectRef(entity.getSpeciality().getId(), entity.getSpeciality().getName()));
         return dto;
+    }
+
+    @Override
+    public Group convertToEntity(GroupDto groupDto) {
+        throw new UnsupportedMethodException();
     }
 }

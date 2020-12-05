@@ -2,13 +2,11 @@ package com.bntu.master.attendance.monitor.api.model.report;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
-import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.StudentDto;
 import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,11 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 public class ReportByStudent {
@@ -48,8 +42,8 @@ public class ReportByStudent {
         }
 
         private void addHours(Row hours) {
-            this.addAtt(hours.getAttHours());
-            this.addGood(hours.getGoodHours());
+            attHours += (hours.getAttHours());
+            goodHours += (hours.getGoodHours());
         }
 
         public String toStringAttendance() {
@@ -88,15 +82,18 @@ public class ReportByStudent {
         List<List<String>> result = new ArrayList<>();
         result.add(Arrays.asList("Предмет", "Тип", "Дата", "Время", "Пропущено/по уважительной"));
         Collections.sort(list, Comparator.comparing(row -> LocalDateTime.of(row.getDate(), row.getTime())));
+        Row sum = new Row();
         for (Row item : list) {
             List<String> row = new ArrayList<>();
             row.add(item.getSubject().getQualifier());
-            row.add(item.getType().name());
+            row.add(item.getType().getText());
             row.add(item.getDate().toString());
             row.add(item.getTime().toString());
             row.add(item.toStringAttendance());
+            sum.addHours(item);
             result.add(row);
         }
+        result.add(Arrays.asList("", "", "", "", sum.toStringAttendance()));
         return result;
     }
 }

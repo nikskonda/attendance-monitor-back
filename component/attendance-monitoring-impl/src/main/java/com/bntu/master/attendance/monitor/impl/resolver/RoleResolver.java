@@ -6,7 +6,6 @@ import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.impl.dataaccess.RoleRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,10 +14,8 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class RoleResolver {
+public class RoleResolver extends AbstractResolver<RoleRepository, Role> {
 
-    @Autowired
-    private RoleRepository repository;
 
     public Role resolve(RoleConstant role) {
         return resolve(ObjectRef.toObjectRef(role.getRole()));
@@ -36,10 +33,10 @@ public class RoleResolver {
         List<Long> byId = new ArrayList<>();
         List<String> byQualifier = new ArrayList<>();
         for (ObjectRef r : roles) {
-            if (r.getId()!=null) {
+            if (r.getId() != null) {
                 byId.add(r.getId());
             } else {
-                if (StringUtils.isNotBlank(r.getQualifier())){
+                if (StringUtils.isNotBlank(r.getQualifier())) {
                     byQualifier.add(r.getQualifier());
                 }
             }

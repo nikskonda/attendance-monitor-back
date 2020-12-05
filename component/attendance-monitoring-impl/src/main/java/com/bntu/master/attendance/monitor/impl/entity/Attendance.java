@@ -1,7 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.entity;
 
 import com.bntu.master.attendance.monitor.api.model.attendance.AttendanceValue;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class Attendance {
+public class Attendance implements Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_generator")
@@ -32,11 +31,11 @@ public class Attendance {
     private AttendanceValue value;
     @ManyToOne
     @JoinColumn
-    private Person professor;
+    private ProfessorPosition professor;
     private LocalDateTime dateTime;
     private boolean isGoodReason = false;
 
-    public Attendance(Long id, Lesson lesson, Person student, AttendanceValue value, Person professor, LocalDateTime dateTime, boolean isGoodReason) {
+    public Attendance(Long id, Lesson lesson, Person student, AttendanceValue value, ProfessorPosition professor, LocalDateTime dateTime, boolean isGoodReason) {
         this.id = id;
         this.lesson = lesson;
         this.student = student;

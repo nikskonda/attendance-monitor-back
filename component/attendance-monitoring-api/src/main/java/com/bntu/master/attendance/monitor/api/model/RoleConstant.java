@@ -8,7 +8,9 @@ public enum RoleConstant {
     STUDENT(1L, "STUDENT"),
     PROFESSOR(2L, "PROFESSOR"),
     PARENT(3L, "PARENT"),
-    ADMIN(4L, "ADMIN");
+    ADMIN(4L, "ADMIN"),
+    REPORT_VIEW(5L, "REPORT_VIEW"),
+    ;
 
     private Long id;
     private String role;

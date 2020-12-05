@@ -1,6 +1,5 @@
 package com.bntu.master.attendance.monitor.api.rest;
 
-import com.bntu.master.attendance.monitor.api.model.report.ReportByStudentAndSubjects;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,24 +13,37 @@ import java.util.List;
 @RequestMapping("/report")
 public interface ReportRest {
 
-    @GetMapping("/byStudentForDateRange")
-    List<List<String>> findGridByStudentForDateRange(
+    @GetMapping("/byStudent")
+    List<List<String>> findGridForStudentReport(
             @RequestParam Long studentId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
 
-    @GetMapping("/byStudentDetailsForDateRange")
-    List<List<String>> findGridByStudentDetailsForDateRange(
+    @GetMapping("/byStudentDetails")
+    List<List<String>> findGridForStudentDetailsReport(
             @RequestParam Long studentId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
 
-    @GetMapping("/byGroupForDateRange")
-    List<List<String>> findGridByGroupForDateRange(
+    @GetMapping("/byStudentAndSubjectDetails")
+    List<List<String>> findGridForStudentAndSubjectDetailsReport(
+            @RequestParam Long studentId,
+            @RequestParam(required = false) Long subjectId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
+
+    @GetMapping("/byGroupAndSubject")
+    List<List<String>> findGridForGroupReport(
             @RequestParam Long groupId,
             @RequestParam Long subjectId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
+
+    @GetMapping("/students")
+    List<List<String>> findGridForStudentReport(@RequestParam Long groupId);
+
+    @GetMapping("/professors")
+    List<List<String>> findGridForProfessorReport();
 
 
 }

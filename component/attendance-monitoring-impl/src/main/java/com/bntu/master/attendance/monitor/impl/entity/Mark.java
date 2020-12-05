@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Mark {
+public class Mark implements Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "mark_generator")

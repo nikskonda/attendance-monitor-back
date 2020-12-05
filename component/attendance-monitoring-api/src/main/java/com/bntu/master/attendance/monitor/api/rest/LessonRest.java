@@ -1,18 +1,15 @@
 package com.bntu.master.attendance.monitor.api.rest;
 
-import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleCell;
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
-import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleGrid;
+import com.bntu.master.attendance.monitor.api.model.LessonSeries;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +21,7 @@ import java.util.List;
 
 @CrossOrigin
 @RequestMapping("/lesson")
-public interface LessonRest {
-
-    @GetMapping("/{id}")
-    LessonDto find(@PathVariable Long id);
-
-    @GetMapping
-    List<LessonDto> findAll();
+public interface LessonRest extends BaseRest<LessonDto> {
 
     @GetMapping("/findByDateRange")
     List<LessonDto> findByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate finalDate);
@@ -43,22 +34,15 @@ public interface LessonRest {
     ScheduleList findGridByDateRange(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate finalDate,
                                      @RequestParam(required = false) Long personId,
+                                     @RequestParam(required = false) boolean topDateHeader,
                                      Authentication authentication);
 
-    @PostMapping
-    LessonDto create(@RequestBody LessonDto lesson);
 
-    @PostMapping("/series")
-    List<LessonDto> createSeries(@RequestParam Long inWeek,
-                     @RequestParam Long count,
-                     @RequestBody LessonDto lesson);
+    @PostMapping("/series/create")
+    List<LessonDto> createSeries(@RequestBody LessonSeries lessonSeries);
 
-    @PutMapping("/{id}")
-    LessonDto update(@PathVariable Long id,
-                     @RequestBody LessonDto lesson);
-
-    @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id);
+    @PostMapping("/series/delete")
+    void deleteSeries(@RequestBody LessonSeries lessonSeries);
 
     @GetMapping("/schedule")
     List<LessonScheduleDto> getLessonScheduling();

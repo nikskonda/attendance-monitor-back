@@ -17,8 +17,8 @@ public class SpecialityRestImpl implements SpecialityRest {
     private SpecialityService service;
 
     @Override
-    public ObjectRef find(Long id, String qualifier) {
-        return service.find(ObjectRef.toObjectRef(id, qualifier));
+    public ObjectRef find(Long id) {
+        return service.find(ObjectRef.toObjectRef(id));
     }
 
     @Override
@@ -32,13 +32,13 @@ public class SpecialityRestImpl implements SpecialityRest {
     }
 
     @Override
-    public ObjectRef create(ObjectRef speciality) {
-        return service.create(speciality);
+    public ObjectRef create(ObjectRef dto) {
+        return service.create(dto);
     }
 
     @Override
-    public ObjectRef update(Long id, ObjectRef speciality) {
-        return service.update(id, speciality);
+    public ObjectRef update(Long id, ObjectRef dto) {
+        return service.update(id, dto);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.bntu.master.attendance.monitor.api.model.scheduleGrid;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
-import com.bntu.master.attendance.monitor.api.model.util.LocalTimeSpan;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,17 +21,17 @@ public class ScheduleCell {
     private boolean isEmpty = false;
     private boolean isHeader = false;
 
-    public ScheduleCell(LocalDate date, int cols){
+    public ScheduleCell(LocalDate date, int row, int col) {
         text = date.toString();
         LocalDate current = LocalDate.now();
         color = current.equals(date) ? "#A0FF95" : "#9DF9F3";
-        setPlace(cols, 0);
+        setPlace(col, row);
         setHeader(true);
     }
 
-    public ScheduleCell(LessonScheduleDto time, int row){
+    public ScheduleCell(LessonScheduleDto time, int row, int col) {
         text = String.format("%s - %s (%s)", time.getStartTime().toString(), time.getFinishTime().toString(), time.getShift().getValue());
-        setPlace(0, row);
+        setPlace(col, row);
         setHeader(true);
     }
 
@@ -42,12 +41,12 @@ public class ScheduleCell {
         lesson = lessonDto;
     }
 
-    private boolean isToday(LessonDto lessonDto){
+    private boolean isToday(LessonDto lessonDto) {
         LocalDateTime current = LocalDateTime.now();
         return current.toLocalDate().equals(lessonDto.getDate());
     }
 
-    private boolean isBetweenCurrentTime(LessonDto lessonDto){
+    private boolean isBetweenCurrentTime(LessonDto lessonDto) {
         LessonScheduleDto time = lessonDto.getTime();
         LocalTime current = LocalTime.now();
         return isToday(lessonDto) && current.isAfter(time.getStartTime()) && current.isBefore(time.getFinishTime());
@@ -66,7 +65,7 @@ public class ScheduleCell {
         this.cols = col;
     }
 
-    public static ScheduleCell empty(int col, int row){
+    public static ScheduleCell empty(int col, int row) {
         ScheduleCell cell = new ScheduleCell();
         cell.setPlace(col, row);
         cell.setText("");

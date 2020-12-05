@@ -4,37 +4,26 @@ import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.impl.entity.LessonSchedule;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
-public class LessonScheduleConverter {
+public class LessonScheduleConverter extends AbstractListConverter<LessonSchedule, LessonScheduleDto> {
 
-    public List<LessonSchedule> convertToEntityList(List<LessonScheduleDto> dtoList) {
-        List<LessonSchedule> result = new ArrayList<>();
-        for (LessonScheduleDto dto : dtoList) {
-            LessonSchedule entity = new LessonSchedule();
-            entity.setId(dto.getId());
-            entity.setOrder(dto.getOrder());
-            entity.setStartTime(dto.getStartTime());
-            entity.setFinishTime(dto.getFinishTime());
-            entity.setShift(dto.getShift().toString());
-            result.add(entity);
-        }
-        return result;
+    public LessonSchedule convertToEntity(LessonScheduleDto dto) {
+        LessonSchedule entity = new LessonSchedule();
+        entity.setId(dto.getId());
+        entity.setOrder(dto.getOrder());
+        entity.setStartTime(dto.getStartTime());
+        entity.setFinishTime(dto.getFinishTime());
+        entity.setShift(dto.getShift().toString());
+        return entity;
     }
 
-    public List<LessonScheduleDto> convertToDtoList(List<LessonSchedule> entityList) {
-        List<LessonScheduleDto> result = new ArrayList<>();
-        for (LessonSchedule entity : entityList) {
-            LessonScheduleDto dto = new LessonScheduleDto();
-            dto.setId(entity.getId());
-            dto.setOrder(entity.getOrder());
-            dto.setStartTime(entity.getStartTime());
-            dto.setFinishTime(entity.getFinishTime());
-            dto.setShift(LessonScheduleDto.Shift.find(entity.getShift()));
-            result.add(dto);
-        }
-        return result;
+    public LessonScheduleDto convertToDto(LessonSchedule entity) {
+        LessonScheduleDto dto = new LessonScheduleDto();
+        dto.setId(entity.getId());
+        dto.setOrder(entity.getOrder());
+        dto.setStartTime(entity.getStartTime());
+        dto.setFinishTime(entity.getFinishTime());
+        dto.setShift(LessonScheduleDto.Shift.find(entity.getShift()));
+        return dto;
     }
 }

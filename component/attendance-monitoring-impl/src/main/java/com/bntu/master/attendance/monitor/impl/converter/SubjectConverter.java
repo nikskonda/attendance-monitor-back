@@ -5,7 +5,7 @@ import com.bntu.master.attendance.monitor.impl.entity.Subject;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SubjectConverter {
+public class SubjectConverter extends AbstractListConverter<Subject, ObjectRef> {
 
     public Subject convertToEntity(ObjectRef dto) {
         Subject entity = new Subject();

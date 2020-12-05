@@ -12,7 +12,6 @@ import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.SubjectResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -75,12 +74,7 @@ public class SubjectService {
     }
 
     public Page<ObjectRef> findByPage(Pageable pageable) {
-        return new PageImpl<>(repository.findAll(pageable).stream()
-                .map(subject -> converter.convertToDto(subject))
-                .sorted(Comparator.comparing(ObjectRef::getQualifier))
-                .collect(Collectors.toList()),
-                pageable,
-                repository.count());
+        return converter.convertToDtos(repository.findAll(pageable));
     }
 
     public List<ObjectRef> findByGroup(ObjectRef groupRef) {

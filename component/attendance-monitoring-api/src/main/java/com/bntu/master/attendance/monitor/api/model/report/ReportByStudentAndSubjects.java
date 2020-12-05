@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,19 +29,20 @@ public class ReportByStudentAndSubjects {
 
         private void addGood(int hours) {
             goodHours += hours;
+            addAtt(hours);
         }
 
         private void addAtt(int hours) {
             attHours += hours;
         }
 
-        private void addtotal() {
+        private void addTotal() {
             totalHours += 2;
         }
 
         private void add(Cell cell) {
-            addGood(cell.getGoodHours());
-            addAtt(cell.getAttHours());
+            goodHours += cell.getGoodHours();
+            attHours += (cell.getAttHours());
             totalHours += cell.getTotalHours();
         }
 
@@ -118,18 +118,18 @@ public class ReportByStudentAndSubjects {
         if (cell == null) {
             cells[index.getLeft()][index.getRight()] = new Cell(0, 0, 2);
         } else {
-            cell.addtotal();
+            cell.addTotal();
         }
     }
 
     public List<List<String>> toStringGrid() {
         List<List<String>> result = new ArrayList<>();
         List<String> row = new ArrayList<>();
-        row.add("");
+        row.add("Дисциплина");
         for (SubjectTypeConstant type : subjectTypes) {
-            row.add(type.name());
+            row.add(type.getText());
         }
-        row.add("Total");
+        row.add("Сумма");
         result.add(row);
         Cell sum = new Cell();
 
@@ -164,7 +164,7 @@ public class ReportByStudentAndSubjects {
         for (int i = 0; i < subjectTypes.size() + 1; i++) {
             row.add("");
         }
-        row.add(String.format("%.2f%%/%.2f%%", (float)(100*sum.getAttHours() / sum.getTotalHours()), (float)(100*sum.getGoodHours() / sum.getTotalHours())));
+        row.add(String.format("%.2f%%/%.2f%%", (float) (100 * sum.getAttHours() / sum.getTotalHours()), (float) (100 * sum.getGoodHours() / sum.getTotalHours())));
         result.add(row);
         return result;
     }

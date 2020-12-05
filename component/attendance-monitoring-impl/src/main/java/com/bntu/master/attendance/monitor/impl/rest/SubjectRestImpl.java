@@ -2,9 +2,7 @@ package com.bntu.master.attendance.monitor.impl.rest;
 
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.SubjectTypeConstant;
-import com.bntu.master.attendance.monitor.api.rest.SpecialityRest;
 import com.bntu.master.attendance.monitor.api.rest.SubjectRest;
-import com.bntu.master.attendance.monitor.impl.service.SpecialityService;
 import com.bntu.master.attendance.monitor.impl.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,8 +18,8 @@ public class SubjectRestImpl implements SubjectRest {
     private SubjectService service;
 
     @Override
-    public ObjectRef find(Long id, String qualifier) {
-        return service.find(ObjectRef.toObjectRef(id, qualifier));
+    public ObjectRef find(Long id) {
+        return service.find(ObjectRef.toObjectRef(id));
     }
 
     @Override
@@ -30,13 +28,13 @@ public class SubjectRestImpl implements SubjectRest {
     }
 
     @Override
-    public ObjectRef create(ObjectRef speciality) {
-        return service.create(speciality);
+    public ObjectRef create(ObjectRef dto) {
+        return service.create(dto);
     }
 
     @Override
-    public ObjectRef update(Long id, ObjectRef speciality) {
-        return service.update(id, speciality);
+    public ObjectRef update(Long id, ObjectRef dto) {
+        return service.update(id, dto);
     }
 
     @Override

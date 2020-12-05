@@ -18,7 +18,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Role implements GrantedAuthority {
+public class Role implements GrantedAuthority, Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "role_generator")

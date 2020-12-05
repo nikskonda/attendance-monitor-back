@@ -4,8 +4,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/attendance_monitor
-#    url: jdbc:postgresql://db:5432/attendance_monitor
-#    url: jdbc:postgresql://localhost:5434/attendance_monitor
+    #    url: jdbc:postgresql://db:5432/attendance_monitor
+    #    url: jdbc:postgresql://localhost:5434/attendance_monitor
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

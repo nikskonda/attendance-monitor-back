@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,12 +65,12 @@ public class SpecialityService {
     }
 
     public Page<ObjectRef> findPage(Pageable pageable) {
-        return new PageImpl<>(repository.findAll()
-                .stream()
+        Page<Speciality> page = repository.findAll(pageable);
+        return new PageImpl<>(page.stream()
                 .map(spec -> ObjectRef.toObjectRef(spec.getId(), spec.getName()))
                 .collect(Collectors.toList()),
-                pageable,
-                repository.count());
+                page.getPageable(),
+                page.getTotalElements());
     }
 
 }

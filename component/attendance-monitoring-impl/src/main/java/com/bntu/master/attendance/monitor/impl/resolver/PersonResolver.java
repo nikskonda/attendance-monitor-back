@@ -3,11 +3,11 @@ package com.bntu.master.attendance.monitor.impl.resolver;
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.RoleConstant;
+import com.bntu.master.attendance.monitor.impl.dataaccess.AccountRepository;
 import com.bntu.master.attendance.monitor.impl.dataaccess.PersonRepository;
-import com.bntu.master.attendance.monitor.impl.dataaccess.UserRepository;
+import com.bntu.master.attendance.monitor.impl.entity.Account;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.Role;
-import com.bntu.master.attendance.monitor.impl.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class PersonResolver {
     private PersonRepository repository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
     private RoleResolver roleResolver;
@@ -31,11 +31,11 @@ public class PersonResolver {
                 : repository.findById(objectRef.getId()).orElseThrow(NotFoundException::new);
     }
 
-    public User resolveUser(ObjectRef objectRef) {
+    public Account resolveUser(ObjectRef objectRef) {
         if (objectRef.isNullQualifier()) {
             throw new NotFoundException();
         }
-        return userRepository.findFirstByEmail(objectRef.getQualifier());
+        return accountRepository.findFirstByEmail(objectRef.getQualifier()).orElse(null);
     }
 
     public Person resolvePersonByRole(ObjectRef objectRef, RoleConstant role) {
@@ -44,12 +44,12 @@ public class PersonResolver {
         return person;
     }
 
-    public User resolveUserByRole(ObjectRef objectRef, RoleConstant role) {
-        User user = resolveUser(objectRef);
+    public Account resolveUserByRole(ObjectRef objectRef, RoleConstant role) {
+        Account account = resolveUser(objectRef);
         Role roleFromDb = roleResolver.resolve(role.get());
-        for (Role r : user.getRoles()) {
-            if (roleFromDb.equals(r)){
-                return user;
+        for (Role r : account.getRoles()) {
+            if (roleFromDb.equals(r)) {
+                return account;
             }
         }
         throw new NotFoundException();

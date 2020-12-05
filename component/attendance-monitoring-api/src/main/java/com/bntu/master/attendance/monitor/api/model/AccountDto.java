@@ -13,12 +13,14 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserDto extends ObjectRef implements UserDetails {
+public class AccountDto extends ObjectRef implements UserDetails {
 
     private String fullName;
     private boolean mustUpdatePassword;
     private String password;
     private Set<ObjectRef> roles;
+    @JsonIgnore
+    private boolean isLock;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,7 +45,7 @@ public class UserDto extends ObjectRef implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLock;
     }
 
     @Override

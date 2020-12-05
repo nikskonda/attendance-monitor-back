@@ -3,15 +3,19 @@ package com.bntu.master.attendance.monitor.impl.dataaccess;
 import com.bntu.master.attendance.monitor.impl.entity.Group;
 import com.bntu.master.attendance.monitor.impl.entity.Person;
 import com.bntu.master.attendance.monitor.impl.entity.StudentGroup;
-import com.bntu.master.attendance.monitor.impl.entity.Subject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+import java.util.List;
 
 public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long> {
 
-    Set<StudentGroup> findAllByGroup(Group group);
+    List<StudentGroup> findAllByGroupAndGroupVolumeId(Group group, Long groupVolume);
+
+    List<StudentGroup> findAllByGroup(Group group);
+
+    Page<StudentGroup> findAllByGroup(Group group, Pageable pageable);
 
     StudentGroup findFirstByStudentAndGroup(Person student, Group group);
 

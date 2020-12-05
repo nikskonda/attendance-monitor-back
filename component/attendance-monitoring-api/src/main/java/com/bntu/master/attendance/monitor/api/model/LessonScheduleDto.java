@@ -1,12 +1,10 @@
 package com.bntu.master.attendance.monitor.api.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalTime;
-import java.util.Objects;
 
 @Data
 public class LessonScheduleDto extends ObjectRef {
@@ -16,7 +14,7 @@ public class LessonScheduleDto extends ObjectRef {
     private LocalTime finishTime;
     private Shift shift;
 
-    public enum Shift{
+    public enum Shift {
         FIRST("1"),
         SECOND("2"),
         ;
@@ -33,7 +31,7 @@ public class LessonScheduleDto extends ObjectRef {
 
         public static Shift find(String value) {
             for (Shift shift : Shift.values()) {
-                if (shift.value.equals(value)){
+                if (shift.value.equals(value)) {
                     return shift;
                 }
             }
@@ -55,7 +53,7 @@ public class LessonScheduleDto extends ObjectRef {
         LessonScheduleDto that = (LessonScheduleDto) o;
 
         boolean isIdEquals = false;
-        if (getId()!=null) {
+        if (getId() != null) {
             isIdEquals = getId().equals(that.getId());
         }
 

@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class LessonSchedule {
+public class LessonSchedule implements Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_schedule_generator")

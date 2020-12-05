@@ -71,15 +71,20 @@ public class AttendanceGrid {
         cells[rowIndex][colIndex] = cell;
     }
 
-    public List<AttendanceCell> toCellList() {
+    public List<AttendanceCell> toHeaderList() {
         List<AttendanceCell> toReturn = new ArrayList<>();
-        int rowIndex = 0;
-        int colIndex = 0;
-
         toReturn.add(AttendanceCell.empty());
         for (LessonDto lesson : lessonHeader) {
             toReturn.add(new AttendanceCell(lesson));
         }
+        return toReturn;
+    }
+
+
+    public List<AttendanceCell> toCellList() {
+        List<AttendanceCell> toReturn = new ArrayList<>();
+        int rowIndex = 0;
+        int colIndex = 0;
 
         for (AttendanceCell[] row : cells) {
             rowIndex++;

@@ -23,7 +23,7 @@ public enum AttendanceValue {
         return text;
     }
 
-    public static AttendanceValue find(String text){
+    public static AttendanceValue find(String text) {
         if ("0".equals(text)) {
             return COME;
         }
@@ -35,7 +35,7 @@ public enum AttendanceValue {
         return null;
     }
 
-    public static AttendanceValue find(Integer value){
+    public static AttendanceValue find(Integer value) {
         for (AttendanceValue att : AttendanceValue.values()) {
             if (att.getHours().equals(value)) {
                 return att;

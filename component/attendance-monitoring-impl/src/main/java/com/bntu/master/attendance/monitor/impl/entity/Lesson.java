@@ -10,17 +10,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Lesson {
+public class Lesson implements Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "lesson_generator")
@@ -31,10 +29,12 @@ public class Lesson {
     private LessonSchedule time;
 
     @ManyToOne
-    private Person professor;
+    private ProfessorPosition professor;
 
     @ManyToOne
     private Group group;
+
+    private Long groupVolumeId;
 
     @ManyToOne
     private Subject subject;

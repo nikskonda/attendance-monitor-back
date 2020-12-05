@@ -3,19 +3,15 @@ package com.bntu.master.attendance.monitor.api.model.attendance;
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
-import com.bntu.master.attendance.monitor.api.model.util.LocalTimeSpan;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 public class AttendanceCell {
 
     private String text;
-//    private String color = "#9DF9F3";
+    //    private String color = "#9DF9F3";
     private AttendanceValue value;
     private boolean isGoodReason;
     private ObjectRef lesson;
@@ -37,19 +33,19 @@ public class AttendanceCell {
         isHeader = true;
     }
 
-    public void setPosition(int row, int col){
+    public void setPosition(int row, int col) {
         this.row = row;
         this.col = col;
     }
 
-    public static AttendanceCell empty(){
+    public static AttendanceCell empty() {
         AttendanceCell cell = new AttendanceCell();
         cell.setEmpty(true);
         cell.setText("");
         return cell;
     }
 
-    public static AttendanceCell empty(LessonDto lessonDto, PersonDto person){
+    public static AttendanceCell empty(LessonDto lessonDto, PersonDto person) {
         AttendanceCell cell = new AttendanceCell();
         cell.setEmpty(true);
         cell.setText("");

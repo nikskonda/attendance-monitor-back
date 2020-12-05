@@ -2,8 +2,8 @@ package com.bntu.master.attendance.monitor.api.model.scheduleGrid;
 
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
-import com.bntu.master.attendance.monitor.api.model.util.LocalTimeSpan;
 import lombok.Data;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,28 +17,28 @@ public class ScheduleGrid {
     private Integer rows;
     private Integer columns;
 
-    private List<LocalDate> header;
-    private List<LessonScheduleDto> rowHeader;
+    private List<LocalDate> dateHeader;
+    private List<LessonScheduleDto> timeHeader;
 
     private ScheduleCell[][] cells;
 
 
-    public ScheduleGrid(Set<LocalDate> header, Set<LessonScheduleDto> rowHeader) {
-        setHeader(new ArrayList<>(header));
-        setRowHeader(new ArrayList<>(rowHeader));
+    public ScheduleGrid(Set<LocalDate> dateHeader, Set<LessonScheduleDto> timeHeader) {
+        setDateHeader(new ArrayList<>(dateHeader));
+        setTimeHeader(new ArrayList<>(timeHeader));
         cells = new ScheduleCell[rows][columns];
     }
 
-    public void setCell(LessonDto lessonDto){
+    public void setCell(LessonDto lessonDto) {
         int row = 0;
         int col = 0;
-        for (LocalDate date : header) {
+        for (LocalDate date : dateHeader) {
             if (date.equals(lessonDto.getDate())) {
                 break;
             }
             col++;
         }
-        for (LessonScheduleDto time : rowHeader) {
+        for (LessonScheduleDto time : timeHeader) {
             if (time.equals(lessonDto.getTime())) {
                 break;
             }
@@ -47,71 +47,70 @@ public class ScheduleGrid {
         cells[row][col] = new ScheduleCell(lessonDto);
     }
 
-    public void setHeader(List<LocalDate> header) {
-        this.header = header;
-        this.header.sort(LocalDate::compareTo);
-        columns = header.size();
+    public void setDateHeader(List<LocalDate> dateHeader) {
+        this.dateHeader = dateHeader;
+        this.dateHeader.sort(LocalDate::compareTo);
+        columns = dateHeader.size();
     }
 
-    public void setRowHeader(List<LessonScheduleDto> rowHeader) {
-        this.rowHeader = rowHeader;
-        this.rowHeader.sort(Comparator.comparing(LessonScheduleDto::getOrder));
-        rows = rowHeader.size();
+    public void setTimeHeader(List<LessonScheduleDto> timeHeader) {
+        this.timeHeader = timeHeader;
+        this.timeHeader.sort(Comparator.comparing(LessonScheduleDto::getOrder));
+        rows = timeHeader.size();
     }
 
-    public List<ScheduleCell> toCellList() {
-        List<ScheduleCell> toReturn = new ArrayList<>();
-        int rowIndex = 0;
-        int colIndex = 0;
-
+    public Pair<List<ScheduleCell>, List<ScheduleCell>> toCellList(boolean topDateHeader) {
+        List<ScheduleCell> header = new ArrayList<>();
         ScheduleCell cell = new ScheduleCell();
-        cell.setText("Время (смена)");
+        cell.setText("");
         cell.setHeader(true);
-        toReturn.add(cell);
-        for (LocalDate date : header) {
-            toReturn.add(new ScheduleCell(date, colIndex++));
-        }
+        header.add(cell);
+        addTopHeader(header, topDateHeader);
 
-        for (ScheduleCell[] row : cells) {
-            rowIndex++;
-            colIndex = 1;
-            toReturn.add(new ScheduleCell(rowHeader.get(rowIndex-1), rowIndex));
-            for (ScheduleCell c : row) {
-                if (c != null) {
-                    c.setPlace(colIndex++, rowIndex);
-                } else {
-                    c = ScheduleCell.empty(colIndex++, rowIndex);
+        List<ScheduleCell> toReturnBody = new ArrayList<>();
+        if (topDateHeader) {
+            for (int i = 0; i < timeHeader.size(); i++) {
+                toReturnBody.add(new ScheduleCell(timeHeader.get(i), i + 1, 0));
+                for (int j = 0; j < dateHeader.size(); j++) {
+                    ScheduleCell c = cells[i][j];
+                    if (c == null) {
+                        toReturnBody.add(ScheduleCell.empty(j + 1, i + 1));
+                    } else {
+                        c.setPlace(j + 1, i + 1);
+                        toReturnBody.add(c);
+                    }
+
                 }
-                toReturn.add(c);
+            }
+        } else {
+            for (int j = 0; j < dateHeader.size(); j++) {
+                toReturnBody.add(new ScheduleCell(dateHeader.get(j), j + 1, 0));
+                for (int i = 0; i < timeHeader.size(); i++) {
+                    ScheduleCell c = cells[i][j];
+                    if (c == null) {
+                        toReturnBody.add(ScheduleCell.empty(i + 1, j + 1));
+                    } else {
+                        c.setPlace(i + 1, j + 1);
+                        toReturnBody.add(c);
+                    }
+                }
             }
         }
-        return toReturn;
+        return Pair.of(header, toReturnBody);
     }
 
 
-//    public void addRow(String rowHeader, List<Cell> row) {
-//        if (cells == null) {
-//            cells = new ArrayList<>();
-//            this.rowHeader = new ArrayList<>();
-//        }
-//        while (row.size() < columns - 1){
-//            row.add(Cell.empty());
-//        }
-//        cells.add(row);
-//        this.rowHeader.add(rowHeader);
-//    }
-//
-//    public void setRow(int rowIndex, String rowHeader, List<Cell> row) {
-//        if (cells == null) {
-//            cells = new ArrayList<>();
-//            this.rowHeader = new ArrayList<>();
-//        }
-//        while (row.size() < columns - 1) {
-//            row.add(Cell.empty());
-//        }
-//        cells.set(rowIndex, row);
-//        this.rowHeader.set(rowIndex, rowHeader);
-//    }
-
+    private void addTopHeader(List<ScheduleCell> toReturn, boolean topDateHeader) {
+        int colIndex = 1;
+        if (topDateHeader) {
+            for (LocalDate date : dateHeader) {
+                toReturn.add(new ScheduleCell(date, 0, colIndex++));
+            }
+        } else {
+            for (LessonScheduleDto date : timeHeader) {
+                toReturn.add(new ScheduleCell(date, 0, colIndex++));
+            }
+        }
+    }
 
 }

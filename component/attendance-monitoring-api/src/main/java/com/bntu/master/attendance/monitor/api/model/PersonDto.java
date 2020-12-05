@@ -13,6 +13,8 @@ public class PersonDto extends ObjectRef {
 
     private String email;
 
+    private String phone;
+
     private Set<ObjectRef> roles;
 
     public String getFullName() {

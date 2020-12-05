@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.impl.rest;
 
 import com.bntu.master.attendance.monitor.api.model.GroupDto;
+import com.bntu.master.attendance.monitor.api.model.GroupVolumeConstant;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.rest.GroupRest;
 import com.bntu.master.attendance.monitor.impl.service.GroupService;
@@ -9,7 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class GroupRestImpl implements GroupRest {
@@ -18,8 +22,8 @@ public class GroupRestImpl implements GroupRest {
     private GroupService service;
 
     @Override
-    public GroupDto find(Long id, String qualifier) {
-        return service.find(ObjectRef.toObjectRef(id, qualifier));
+    public GroupDto find(Long id) {
+        return service.find(ObjectRef.toObjectRef(id));
     }
 
     @Override
@@ -28,18 +32,26 @@ public class GroupRestImpl implements GroupRest {
     }
 
     @Override
+    public List<String> getGroupVolumes() {
+        return Arrays.stream(GroupVolumeConstant.values())
+                .sorted(Comparator.comparing(GroupVolumeConstant::getSortOrder))
+                .map(GroupVolumeConstant::getName)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Page<GroupDto> findByPage(Pageable pageable) {
         return service.findByPage(pageable);
     }
 
     @Override
-    public GroupDto create(GroupDto group) {
-        return service.create(group);
+    public GroupDto create(GroupDto dto) {
+        return service.create(dto);
     }
 
     @Override
-    public GroupDto update(Long id, GroupDto group) {
-        return service.update(id, group);
+    public GroupDto update(Long id, GroupDto dto) {
+        return service.update(id, dto);
     }
 
     @Override

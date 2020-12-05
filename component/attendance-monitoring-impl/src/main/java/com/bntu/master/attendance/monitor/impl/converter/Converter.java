@@ -1,6 +1,8 @@
 package com.bntu.master.attendance.monitor.impl.converter;
 
-public interface Converter<E, DTO> {
+import com.bntu.master.attendance.monitor.impl.entity.Base;
+
+public interface Converter<E extends Base, DTO> {
 
     E convertToEntity(DTO dto);
 

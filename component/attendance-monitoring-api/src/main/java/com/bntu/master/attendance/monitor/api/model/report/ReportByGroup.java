@@ -34,12 +34,13 @@ public class ReportByGroup {
 
         private void addGood(int hours) {
             this.goodHours += hours;
+            addAtt(hours);
         }
 
         private void addHours(Cell hours) {
             if (hours == null) return;
-            this.addAtt(hours.getAttHours());
-            this.addGood(hours.getGoodHours());
+            this.attHours += (hours.getAttHours());
+            this.goodHours += (hours.getGoodHours());
         }
 
         @Override
@@ -98,7 +99,7 @@ public class ReportByGroup {
                 break;
             }
         }
-        for (j = 0; i < subjectTypes.size(); j++) {
+        for (j = 0; j < subjectTypes.size(); j++) {
             if (type.equals(subjectTypes.get(j))) {
                 break;
             }
@@ -137,15 +138,15 @@ public class ReportByGroup {
         List<String> row = new ArrayList<>();
         row.add("");
         for (SubjectTypeConstant type : subjectTypes) {
-            row.add(type.name());
+            row.add(type.getText());
         }
-        row.add("Total");
-        row.add("Total %");
+        row.add("Всего (ч)");
+        row.add("Всего (%)");
         result.add(row);
 
         int sumLessons = 0;
         List<String> lessonCountRow = new ArrayList<>();
-        lessonCountRow.add("Total Lessons Count");
+        lessonCountRow.add("Всего занятий (ч)");
         for (SubjectTypeConstant type : subjectTypes) {
             sumLessons += lessonTotal.get(type);
             lessonCountRow.add(lessonTotal.get(type).toString());
@@ -168,13 +169,15 @@ public class ReportByGroup {
                 }
             }
             row.add(attSum.toString());
-            row.add(String.format("%.2f%% / %.2f%%", (float)(100*attSum.getAttHours() / sumLessons), (float)(100*attSum.getGoodHours() / sumLessons)));
+            row.add(String.format("%.2f%% / %.2f%%",
+                    sumLessons == 0 ? 0 : (float) (100 * attSum.getAttHours() / sumLessons),
+                    sumLessons == 0 ? 0 : (float) (100 * attSum.getGoodHours() / sumLessons)));
             result.add(row);
             rowIndex++;
         }
         row = new ArrayList<>();
         Cell sum = new Cell();
-        row.add("Total Group attendance");
+        row.add("Посещаемость группы (ч)");
         recalcAttTotal();
         for (SubjectTypeConstant type : subjectTypes) {
             sum.addHours(attTotal.get(type));
@@ -185,16 +188,16 @@ public class ReportByGroup {
         result.add(row);
 
         row = new ArrayList<>();
-        row.add("Total Group Attendance %");
+        row.add("Посещаемость группы (%)");
         for (SubjectTypeConstant type : subjectTypes) {
             row.add(String.format("%.2f%% / %.2f%%",
-                    (100F*attTotal.get(type).getAttHours() / (lessonTotal.get(type)*students.size())),
-                    (100F*attTotal.get(type).getGoodHours() / (lessonTotal.get(type)*students.size()))
+                    (100F * attTotal.get(type).getAttHours() / (lessonTotal.get(type) * students.size())),
+                    (100F * attTotal.get(type).getGoodHours() / (lessonTotal.get(type) * students.size()))
             ));
         }
         row.add(String.format("%.2f%% / %.2f%%",
-                (100F*sum.getAttHours() / sumLessons*students.size()),
-                (100F*sum.getGoodHours() / sumLessons*students.size())));
+                (100F * sum.getAttHours() / sumLessons * students.size()),
+                (100F * sum.getGoodHours() / sumLessons * students.size())));
         row.add("");
         result.add(row);
 
