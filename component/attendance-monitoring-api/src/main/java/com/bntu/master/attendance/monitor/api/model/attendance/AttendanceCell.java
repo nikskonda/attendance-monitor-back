@@ -39,9 +39,13 @@ public class AttendanceCell {
     }
 
     public static AttendanceCell empty() {
+        return empty("");
+    }
+
+    public static AttendanceCell empty(String text) {
         AttendanceCell cell = new AttendanceCell();
         cell.setEmpty(true);
-        cell.setText("");
+        cell.setText(text);
         return cell;
     }
 

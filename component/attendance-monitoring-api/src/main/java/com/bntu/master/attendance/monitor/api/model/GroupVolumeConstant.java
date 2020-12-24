@@ -5,20 +5,22 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Optional;
 
 public enum GroupVolumeConstant {
-    FULL(1L, "FULL"),
-    FIRST(2L, "FIRST"),
-    SECOND(3L, "SECOND"),
-    THIRD(4L, "THIRD"),
+    FULL(1L, "FULL", "Группа"),
+    FIRST(2L, "FIRST", "1"),
+    SECOND(3L, "SECOND", "2"),
+    THIRD(4L, "THIRD", "3"),
     ;
 
     private Long sortOrder;
     private String name;
     private Long id;
+    private String ruText;
 
-    GroupVolumeConstant(Long id, String name) {
+    GroupVolumeConstant(Long id, String name, String ru) {
         this.sortOrder = id;
         this.name = name;
         this.id = id;
+        this.ruText = ru;
     }
 
     public Long getSortOrder() {
@@ -31,6 +33,10 @@ public enum GroupVolumeConstant {
 
     public Long getId() {
         return id;
+    }
+
+    public String getRuText() {
+        return ruText;
     }
 
     public static Optional<GroupVolumeConstant> find(ObjectRef ref) {

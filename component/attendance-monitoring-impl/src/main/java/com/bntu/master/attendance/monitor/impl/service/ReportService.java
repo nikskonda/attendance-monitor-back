@@ -1,5 +1,6 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
+import com.bntu.master.attendance.monitor.api.model.GroupVolumeConstant;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.api.model.PersonDto;
 import com.bntu.master.attendance.monitor.api.model.ProfessorDto;
@@ -183,20 +184,19 @@ public class ReportService {
     public List<List<String>> findGridForStudentReport(Long groupId) {
         List<StudentWithParentDto> students = studentService.findStudentsByGroup(ObjectRef.toObjectRef(groupId));
         List<List<String>> result = new ArrayList<>();
-        result.add(Arrays.asList("Фамилия", "Имя", "Отчество", "Подгруппа", "E-mail", "Родитель"));
+        result.add(Arrays.asList("ФИО", "Подгр.", "Email", "Email  родителя"));
         for (StudentWithParentDto stud : students) {
-            result.add(Arrays.asList(stud.getLastName(), stud.getFirstName(), stud.getPatronymic(), stud.getGroupVolume(), stud.getEmail(), stud.getParentEmail()));
+            result.add(Arrays.asList(stud.getFullName(), GroupVolumeConstant.find(stud.getGroupVolume()).get().getRuText(), stud.getEmail(), stud.getParentEmail()));
         }
         return result;
-
     }
 
     public List<List<String>> findGridForProfessorReport() {
         List<ProfessorDto> profs = professorService.findAll();
         List<List<String>> result = new ArrayList<>();
-        result.add(Arrays.asList("Фамилия", "Имя", "Отчество", "Должность", "E-mail", "Телефон"));
+        result.add(Arrays.asList("ФИО", "Должность", "Email", "Телефон"));
         for (ProfessorDto prof : profs) {
-            List<String> row = Arrays.asList(prof.getLastName(), prof.getFirstName(), prof.getPatronymic(), prof.getPosition().getQualifier(), prof.getEmail(), prof.getPhone());
+            List<String> row = Arrays.asList(prof.getFullName(), prof.getPosition().getQualifier(), prof.getEmail(), prof.getPhone());
             for (String col : row) {
                 if (col == null) {
                     col = "";

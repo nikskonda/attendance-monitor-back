@@ -33,6 +33,7 @@ import com.bntu.master.attendance.monitor.impl.entity.StudentGroup;
 import com.bntu.master.attendance.monitor.impl.entity.Subject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -128,6 +129,7 @@ public class GenerateService {
         roleRepository.save(new Role(RoleConstant.STUDENT.getId(), RoleConstant.STUDENT.getRole()));
         roleRepository.save(new Role(RoleConstant.PROFESSOR.getId(), RoleConstant.PROFESSOR.getRole()));
         roleRepository.save(new Role(RoleConstant.PARENT.getId(), RoleConstant.PARENT.getRole()));
+        roleRepository.save(new Role(RoleConstant.EDITOR.getId(), RoleConstant.EDITOR.getRole()));
         Role role4 = roleRepository.save(new Role(RoleConstant.ADMIN.getId(), RoleConstant.ADMIN.getRole()));
 
 
@@ -183,12 +185,13 @@ public class GenerateService {
         groups = groupRepository.saveAll(groups);
 
         List<Position> positions = new ArrayList<>();
-        positions.add(new Position(null, "Преподаватель"));
-        positions.add(new Position(null, "Лаборант"));
-        positions.add(new Position(null, "Старший преподаватель"));
-        positions.add(new Position(null, "Доцент"));
-        positions.add(new Position(null, "Профессор"));
         positions.add(new Position(null, "Заведающий кафедрой"));
+        positions.add(new Position(null, "Профессор"));
+        positions.add(new Position(null, "Доцент"));
+        positions.add(new Position(null, "Старший преподаватель"));
+        positions.add(new Position(null, "Преподаватель"));
+        positions.add(new Position(null, "Acистент"));
+
         positions = positionRepository.saveAll(positions);
 
         List<StudentGroup> studs = new ArrayList<>();
@@ -220,13 +223,18 @@ public class GenerateService {
         for (int i = 0; i < 20; i++) {
             String name = "prof" + i;
             String email = name + "@bntu.by";
+            String phone = RandomStringUtils.randomNumeric(9);
+            if (StringUtils.isNotBlank(phone)) {
+                phone = phone.replaceAll("\\D", "");
+                phone = (String.format("(%s) %s-%s-%s", phone.substring(0, 2), phone.substring(2, 5), phone.substring(5, 7), phone.substring(7)));
+            }
             Person prof = personRepository.save(new Person(
                     null,
                     get(names, false),
                     get(lastName, false),
                     get(patronymic, false),
                     email,
-                    RandomStringUtils.randomNumeric(9)));
+                    phone));
             accounts.add(new Account(email, bCryptPasswordEncoder.encode(name), LocalDate.now().plusYears(1), profRole));
             profs.add(new ProfessorPosition(positions.get(random.nextInt(positions.size())), prof));
         }

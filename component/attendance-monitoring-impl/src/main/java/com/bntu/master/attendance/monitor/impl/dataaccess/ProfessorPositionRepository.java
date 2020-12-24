@@ -13,7 +13,8 @@ public interface ProfessorPositionRepository extends JpaRepository<ProfessorPosi
     ProfessorPosition findFirstByProfessor(Person prof);
 
     @Query(nativeQuery = true,
-            value = "select p.id, p.email, p.first_name firstName, p.last_name lastName, p.patronymic, p.phone, pp.position_id positionId, pos.name positionName " +
+            value = "select p.id, p.email, p.first_name firstName, p.last_name lastName, p.patronymic, p.phone, " +
+                    "pp.position_id positionId, pos.name positionName " +
                     "from person p " +
                     "join professor_position pp on pp.professor_email = p.email " +
                     "join position pos on pos.id = pp.position_id ",

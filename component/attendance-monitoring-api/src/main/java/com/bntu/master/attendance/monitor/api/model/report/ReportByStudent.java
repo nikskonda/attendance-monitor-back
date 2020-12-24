@@ -8,9 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +49,7 @@ public class ReportByStudent {
         }
 
         public String toStringAttendance() {
-            return String.format("%d/%d", attHours, goodHours);
+            return String.format("%d/%d", attHours+goodHours, goodHours);
         }
     }
 
@@ -80,20 +82,21 @@ public class ReportByStudent {
 
     public List<List<String>> toStringGrid() {
         List<List<String>> result = new ArrayList<>();
-        result.add(Arrays.asList("Предмет", "Тип", "Дата", "Время", "Пропущено/по уважительной"));
+        result.add(Arrays.asList("Дисциплина", "Вид", "Дата", "Время", "Пропущено (ч)"));
         Collections.sort(list, Comparator.comparing(row -> LocalDateTime.of(row.getDate(), row.getTime())));
         Row sum = new Row();
+        DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("dd.MM.YYYY");
         for (Row item : list) {
             List<String> row = new ArrayList<>();
             row.add(item.getSubject().getQualifier());
             row.add(item.getType().getText());
-            row.add(item.getDate().toString());
+            row.add(item.getDate().format(formatter));
             row.add(item.getTime().toString());
             row.add(item.toStringAttendance());
             sum.addHours(item);
             result.add(row);
         }
-        result.add(Arrays.asList("", "", "", "", sum.toStringAttendance()));
+        result.add(Arrays.asList("", "", "", "Сумма", sum.toStringAttendance()));
         return result;
     }
 }

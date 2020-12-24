@@ -10,6 +10,7 @@ public enum RoleConstant {
     PARENT(3L, "PARENT"),
     ADMIN(4L, "ADMIN"),
     REPORT_VIEW(5L, "REPORT_VIEW"),
+    EDITOR(6L, "EDITOR"),
     ;
 
     private Long id;

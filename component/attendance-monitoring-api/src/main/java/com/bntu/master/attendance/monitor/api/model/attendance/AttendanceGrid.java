@@ -73,7 +73,7 @@ public class AttendanceGrid {
 
     public List<AttendanceCell> toHeaderList() {
         List<AttendanceCell> toReturn = new ArrayList<>();
-        toReturn.add(AttendanceCell.empty());
+        toReturn.add(AttendanceCell.empty("ФИО студентов"));
         for (LessonDto lesson : lessonHeader) {
             toReturn.add(new AttendanceCell(lesson));
         }

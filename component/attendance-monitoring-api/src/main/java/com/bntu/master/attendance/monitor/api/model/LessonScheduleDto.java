@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 public class LessonScheduleDto extends ObjectRef {
@@ -13,6 +14,12 @@ public class LessonScheduleDto extends ObjectRef {
     private LocalTime startTime;
     private LocalTime finishTime;
     private Shift shift;
+    private String text;
+
+    public String getText() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
+        return String.format("%s - %s (%s)", startTime.format(format), finishTime.format(format), shift.getValue());
+    }
 
     public enum Shift {
         FIRST("1"),

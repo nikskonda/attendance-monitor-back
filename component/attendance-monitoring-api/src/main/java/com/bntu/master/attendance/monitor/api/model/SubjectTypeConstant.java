@@ -1,9 +1,9 @@
 package com.bntu.master.attendance.monitor.api.model;
 
 public enum SubjectTypeConstant {
-    LECTURE(1, "Лекция"),
-    PRACTICE(3, "Практика"),
-    LAB(2, "Лабораторная"),
+    LECTURE(1, "Лекц."),
+    PRACTICE(3, "Практ."),
+    LAB(2, "Лаб."),
     ;
 
     private int sortOrder;

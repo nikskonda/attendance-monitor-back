@@ -48,7 +48,7 @@ public class ReportByStudentAndSubjects {
 
         @Override
         public String toString() {
-            return String.format("%d/%d/%d", attHours, goodHours, totalHours);
+            return String.format("%d/%d/%d", totalHours, attHours, goodHours);
         }
     }
 
@@ -127,9 +127,9 @@ public class ReportByStudentAndSubjects {
         List<String> row = new ArrayList<>();
         row.add("Дисциплина");
         for (SubjectTypeConstant type : subjectTypes) {
-            row.add(type.getText());
+            row.add(type.getText()+"(ч)");
         }
-        row.add("Сумма");
+        row.add("Итог");
         result.add(row);
         Cell sum = new Cell();
 
@@ -154,17 +154,19 @@ public class ReportByStudentAndSubjects {
             rowIndex++;
         }
         row = new ArrayList<>();
-        for (int i = 0; i < subjectTypes.size() + 1; i++) {
+        for (int i = 0; i < subjectTypes.size(); i++) {
             row.add("");
         }
+        row.add("Сумма (ч)");
         row.add(sum.toString());
         result.add(row);
 
         row = new ArrayList<>();
-        for (int i = 0; i < subjectTypes.size() + 1; i++) {
+        for (int i = 0; i < subjectTypes.size() ; i++) {
             row.add("");
         }
-        row.add(String.format("%.2f%%/%.2f%%", (float) (100 * sum.getAttHours() / sum.getTotalHours()), (float) (100 * sum.getGoodHours() / sum.getTotalHours())));
+        row.add("Сумма (%)");
+        row.add(String.format("%d%%/%d%%", (100 * sum.getAttHours() / sum.getTotalHours()), (100 * sum.getGoodHours() / sum.getTotalHours())));
         result.add(row);
         return result;
     }

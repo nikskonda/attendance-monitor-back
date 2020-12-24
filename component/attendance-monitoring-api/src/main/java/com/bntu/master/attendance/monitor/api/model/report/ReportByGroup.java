@@ -169,15 +169,15 @@ public class ReportByGroup {
                 }
             }
             row.add(attSum.toString());
-            row.add(String.format("%.2f%% / %.2f%%",
-                    sumLessons == 0 ? 0 : (float) (100 * attSum.getAttHours() / sumLessons),
-                    sumLessons == 0 ? 0 : (float) (100 * attSum.getGoodHours() / sumLessons)));
+            row.add(String.format("%d%%/%d%%",
+                    sumLessons == 0 ? 0 : (100 * attSum.getAttHours() / sumLessons),
+                    sumLessons == 0 ? 0 : (100 * attSum.getGoodHours() / sumLessons)));
             result.add(row);
             rowIndex++;
         }
         row = new ArrayList<>();
         Cell sum = new Cell();
-        row.add("Посещаемость группы (ч)");
+        row.add("Пропуски группы (ч)");
         recalcAttTotal();
         for (SubjectTypeConstant type : subjectTypes) {
             sum.addHours(attTotal.get(type));
@@ -188,16 +188,16 @@ public class ReportByGroup {
         result.add(row);
 
         row = new ArrayList<>();
-        row.add("Посещаемость группы (%)");
+        row.add("Пропуски группы (%)");
         for (SubjectTypeConstant type : subjectTypes) {
-            row.add(String.format("%.2f%% / %.2f%%",
-                    (100F * attTotal.get(type).getAttHours() / (lessonTotal.get(type) * students.size())),
-                    (100F * attTotal.get(type).getGoodHours() / (lessonTotal.get(type) * students.size()))
+            row.add(String.format("%d%%/%d%%",
+                    (int)(100F * attTotal.get(type).getAttHours() / (lessonTotal.get(type) * students.size())),
+                    (int)(100F * attTotal.get(type).getGoodHours() / (lessonTotal.get(type) * students.size()))
             ));
         }
-        row.add(String.format("%.2f%% / %.2f%%",
-                (100F * sum.getAttHours() / sumLessons * students.size()),
-                (100F * sum.getGoodHours() / sumLessons * students.size())));
+        row.add(String.format("%d%%/%d%%",
+                (int)(100F * sum.getAttHours() / sumLessons * students.size()),
+                (int)(100F * sum.getGoodHours() / sumLessons * students.size())));
         row.add("");
         result.add(row);
 

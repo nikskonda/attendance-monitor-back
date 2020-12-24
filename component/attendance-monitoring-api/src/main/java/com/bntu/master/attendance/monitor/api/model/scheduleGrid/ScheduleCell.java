@@ -23,8 +23,7 @@ public class ScheduleCell {
 
     public ScheduleCell(LocalDate date, int row, int col) {
         text = date.toString();
-        LocalDate current = LocalDate.now();
-        color = current.equals(date) ? "#A0FF95" : "#9DF9F3";
+        setCol(date, null);
         setPlace(col, row);
         setHeader(true);
     }
@@ -37,19 +36,27 @@ public class ScheduleCell {
 
     public ScheduleCell(LessonDto lessonDto) {
         text = lessonDto.getSubject() + "\n" + lessonDto.getGroup().getQualifier();
-        color = isToday(lessonDto) ? isBetweenCurrentTime(lessonDto) ? "lightpink" : "#A0FF95" : "#9DF9F3";
+        setCol(lessonDto.getDate(), lessonDto.getTime());
         lesson = lessonDto;
     }
 
-    private boolean isToday(LessonDto lessonDto) {
+    private boolean isToday(LocalDate date) {
         LocalDateTime current = LocalDateTime.now();
-        return current.toLocalDate().equals(lessonDto.getDate());
+        return current.toLocalDate().equals(date);
     }
 
-    private boolean isBetweenCurrentTime(LessonDto lessonDto) {
-        LessonScheduleDto time = lessonDto.getTime();
+    public void setCol(LocalDate date, LessonScheduleDto time) {
+        color = isToday(date) ?
+                time != null && isBetweenCurrentTime(date, time.getStartTime(), time.getFinishTime())
+                        ? "NOW"
+                        : "TODAY"
+                : null;
+    }
+
+
+    private boolean isBetweenCurrentTime(LocalDate date, LocalTime start, LocalTime finish) {
         LocalTime current = LocalTime.now();
-        return isToday(lessonDto) && current.isAfter(time.getStartTime()) && current.isBefore(time.getFinishTime());
+        return isToday(date) && current.isAfter(start) && current.isBefore(finish);
     }
 
     private void setEmpty(boolean isEmpty) {
@@ -65,11 +72,13 @@ public class ScheduleCell {
         this.cols = col;
     }
 
-    public static ScheduleCell empty(int col, int row) {
+    public static ScheduleCell empty(int col, int row, LocalDate date, LessonScheduleDto time) {
         ScheduleCell cell = new ScheduleCell();
         cell.setPlace(col, row);
         cell.setText("");
         cell.setEmpty(true);
+        LocalDate current = LocalDate.now();
+        cell.setCol(date, time);
         return cell;
     }
 }

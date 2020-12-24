@@ -74,7 +74,7 @@ public class ScheduleGrid {
                 for (int j = 0; j < dateHeader.size(); j++) {
                     ScheduleCell c = cells[i][j];
                     if (c == null) {
-                        toReturnBody.add(ScheduleCell.empty(j + 1, i + 1));
+                        toReturnBody.add(ScheduleCell.empty(j + 1, i + 1, dateHeader.get(j), timeHeader.get(i)));
                     } else {
                         c.setPlace(j + 1, i + 1);
                         toReturnBody.add(c);
@@ -88,7 +88,7 @@ public class ScheduleGrid {
                 for (int i = 0; i < timeHeader.size(); i++) {
                     ScheduleCell c = cells[i][j];
                     if (c == null) {
-                        toReturnBody.add(ScheduleCell.empty(i + 1, j + 1));
+                        toReturnBody.add(ScheduleCell.empty(i + 1, j + 1, dateHeader.get(j), timeHeader.get(i)));
                     } else {
                         c.setPlace(i + 1, j + 1);
                         toReturnBody.add(c);
