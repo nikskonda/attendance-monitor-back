@@ -2,6 +2,7 @@ package com.bntu.master.attendance.monitor.impl.service;
 
 import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
 import com.bntu.master.attendance.monitor.api.exception.NotFoundException;
+import com.bntu.master.attendance.monitor.api.exception.UsedInSystemException;
 import com.bntu.master.attendance.monitor.api.model.GroupVolumeConstant;
 import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
@@ -32,6 +33,7 @@ import com.bntu.master.attendance.monitor.impl.resolver.PersonResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.RoleResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.SubjectResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -119,7 +121,11 @@ public class LessonService {
     }
 
     public void delete(ObjectRef objectRef) {
-        repository.delete(resolver.resolve(objectRef));
+        try{
+            repository.delete(resolver.resolve(objectRef));
+        } catch (DataIntegrityViolationException ex) {
+            throw new UsedInSystemException();
+        }
     }
 
     public List<LessonDto> createSeries(LessonSeries lessonSeries) {

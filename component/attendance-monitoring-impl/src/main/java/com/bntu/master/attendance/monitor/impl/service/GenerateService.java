@@ -97,15 +97,15 @@ public class GenerateService {
 
     private void loadAll() {
         try {
-            names = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
-            lastName = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
-            patronymic = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
-            subject = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
+//            names = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
+//            lastName = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
+//            patronymic = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
+//            subject = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
 
-//            names = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
-//            lastName = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
-//            patronymic = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
-//            subject = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
+            names = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
+            lastName = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
+            patronymic = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
+            subject = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
 
         } catch (Exception ex) {
         }

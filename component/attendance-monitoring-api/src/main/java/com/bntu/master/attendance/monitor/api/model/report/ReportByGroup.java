@@ -191,13 +191,13 @@ public class ReportByGroup {
         row.add("Пропуски группы (%)");
         for (SubjectTypeConstant type : subjectTypes) {
             row.add(String.format("%d%%/%d%%",
-                    (int)(100F * attTotal.get(type).getAttHours() / (lessonTotal.get(type) * students.size())),
-                    (int)(100F * attTotal.get(type).getGoodHours() / (lessonTotal.get(type) * students.size()))
+                    (100 * attTotal.get(type).getAttHours() / (lessonTotal.get(type) * students.size())),
+                    (100 * attTotal.get(type).getGoodHours() / (lessonTotal.get(type) * students.size()))
             ));
         }
         row.add(String.format("%d%%/%d%%",
-                (int)(100F * sum.getAttHours() / sumLessons * students.size()),
-                (int)(100F * sum.getGoodHours() / sumLessons * students.size())));
+                (100 * sum.getAttHours() / (sumLessons * students.size())),
+                (100 * sum.getGoodHours() / (sumLessons * students.size()))));
         row.add("");
         result.add(row);
 

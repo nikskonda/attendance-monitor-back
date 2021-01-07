@@ -1,11 +1,13 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
 import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
+import com.bntu.master.attendance.monitor.api.exception.UsedInSystemException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.dataaccess.SpecialityRepository;
 import com.bntu.master.attendance.monitor.impl.entity.Speciality;
 import com.bntu.master.attendance.monitor.impl.resolver.SpecialityResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +58,11 @@ public class SpecialityService {
     }
 
     public void delete(ObjectRef dto) {
-        Speciality speciality = resolver.resolve(dto);
-        repository.delete(speciality);
+        try{
+            repository.delete(resolver.resolve(dto));
+        } catch (DataIntegrityViolationException ex) {
+            throw new UsedInSystemException();
+        }
     }
 
     public List<ObjectRef> findAll() {

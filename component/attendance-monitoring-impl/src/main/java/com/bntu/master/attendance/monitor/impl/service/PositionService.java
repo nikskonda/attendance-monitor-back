@@ -1,6 +1,7 @@
 package com.bntu.master.attendance.monitor.impl.service;
 
 import com.bntu.master.attendance.monitor.api.exception.AttendanceMonitorException;
+import com.bntu.master.attendance.monitor.api.exception.UsedInSystemException;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
 import com.bntu.master.attendance.monitor.impl.converter.PositionConverter;
 import com.bntu.master.attendance.monitor.impl.dataaccess.LessonRepository;
@@ -9,6 +10,7 @@ import com.bntu.master.attendance.monitor.impl.entity.Position;
 import com.bntu.master.attendance.monitor.impl.resolver.GroupResolver;
 import com.bntu.master.attendance.monitor.impl.resolver.PositionResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -60,7 +62,11 @@ public class PositionService {
     }
 
     public void delete(ObjectRef dto) {
-        repository.delete(resolver.resolve(dto));
+        try{
+            repository.delete(resolver.resolve(dto));
+        } catch (DataIntegrityViolationException ex) {
+            throw new UsedInSystemException();
+        }
     }
 
     public List<ObjectRef> findAll() {
