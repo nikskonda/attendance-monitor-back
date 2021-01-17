@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -100,17 +101,22 @@ public class AccountService implements UserDetailsService {
         }
 
         String password = generatePassword();
-        //ToDo
-        password = email.substring(0, email.indexOf("@"));
         Account newAccount = new Account();
         newAccount.setEmail(email);
         newAccount.setPassword(bCryptPasswordEncoder.encode(password));
         newAccount.setPasswordExpireDate(LocalDate.now());
         newAccount.setRoles(newRoles);
-
         newAccount = repository.save(newAccount);
 
-        sendEmail(email, password);
+        try {
+            sendEmail(email, password);
+        } catch (MailAuthenticationException ex) {
+            //ToDo
+            password = email.substring(0, email.indexOf("@"));
+            newAccount.setPassword(bCryptPasswordEncoder.encode(password));
+            newAccount = repository.save(newAccount);
+            System.out.println(ex.getMessage());
+        }
         return newAccount;
     }
 
@@ -188,7 +194,7 @@ public class AccountService implements UserDetailsService {
 
 
         return new PageImpl<>(
-                repository.findByEmailLikeAndRolesIn(email, roles, pageable)
+                repository.findDistinctByEmailLikeAndRolesIn(email, roles, pageable)
                         .stream()
                         .map(user ->
                         {
@@ -243,7 +249,7 @@ public class AccountService implements UserDetailsService {
     }
 
     private void sendEmail(String email, String password) {
-        emailService.sendEmail(email, "Добро пожаловать в систему Attendance-monitor App",
+        emailService.sendEmail(email, "Добро пожаловать в web-приложение для учёта и анализа посещаемости занятий!",
                 String.format("Для входа в систему используйте: " +
                                 "\n\te-mail: %s " +
                                 "\n\tпароль: %s" +

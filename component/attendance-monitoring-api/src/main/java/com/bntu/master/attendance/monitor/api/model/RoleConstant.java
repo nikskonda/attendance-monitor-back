@@ -8,9 +8,8 @@ public enum RoleConstant {
     STUDENT(1L, "STUDENT"),
     PROFESSOR(2L, "PROFESSOR"),
     PARENT(3L, "PARENT"),
-    ADMIN(4L, "ADMIN"),
-    REPORT_VIEW(5L, "REPORT_VIEW"),
-    EDITOR(6L, "EDITOR"),
+    REPORT_VIEW(4L, "REPORT_VIEW"),
+    EDITOR(5L, "EDITOR"),
     ;
 
     private Long id;
@@ -41,5 +40,10 @@ public enum RoleConstant {
     public ObjectRef find(String toFindRole) {
         Optional<RoleConstant> role = Arrays.stream(RoleConstant.values()).filter(r -> r.role.equals(toFindRole)).findFirst();
         return role.map(roleConstant -> new ObjectRef(roleConstant.id, roleConstant.role)).orElse(null);
+    }
+
+    public static RoleConstant findConstant(String toFindRole) {
+        Optional<RoleConstant> role = Arrays.stream(RoleConstant.values()).filter(r -> r.role.equals(toFindRole)).findFirst();
+        return role.orElse(null);
     }
 }

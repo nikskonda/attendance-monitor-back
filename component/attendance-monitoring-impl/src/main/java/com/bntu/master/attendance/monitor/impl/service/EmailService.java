@@ -19,7 +19,7 @@ public class EmailService {
         message.setText(text);
 
         // Send Message!
-//        this.emailSender.send(message);
+        this.emailSender.send(message);
     }
 
 

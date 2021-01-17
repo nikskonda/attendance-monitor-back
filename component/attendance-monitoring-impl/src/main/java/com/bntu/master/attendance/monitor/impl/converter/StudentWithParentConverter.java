@@ -42,7 +42,9 @@ public class StudentWithParentConverter extends AbstractListConverter<ParentCont
         personConverter.fillBase(studentDto, entity.getStudent());
         studentDto.setGroup(toRef(group.getGroup().getId(), group.getGroup().getKey()));
         studentDto.setGroupVolume(GroupVolumeConstant.find(group.getGroupVolumeId()).toString());
-        studentDto.setParentEmail(entity.getParent().getEmail());
+        if (entity.getParent() != null) {
+            studentDto.setParentEmail(entity.getParent().getEmail());
+        }
         return studentDto;
     }
 }

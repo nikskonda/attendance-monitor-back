@@ -29,6 +29,6 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 //            "join role r on r.id = pr.role_id " +
 //            "where pr.email like ?1 and  pr.role_id In (?2) " +
 //            "group by pr.email")
-    Page<Account> findByEmailLikeAndRolesIn(String emailSearch, Set<Role> roles, Pageable pageable);
+    Page<Account> findDistinctByEmailLikeAndRolesIn(String emailSearch, Set<Role> roles, Pageable pageable);
 
 }

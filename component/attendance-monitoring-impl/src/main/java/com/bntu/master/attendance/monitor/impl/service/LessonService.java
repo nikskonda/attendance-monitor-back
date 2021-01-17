@@ -168,7 +168,7 @@ public class LessonService {
 
         Set<Integer> weeks = new HashSet<>();
         LocalDate startDate = LocalDate.parse(lessonSeries.getStart().toString());
-        while (!startDate.isBefore(lessonSeries.getFinish())) {
+        while (startDate.equals(lessonSeries.getFinish()) || startDate.isBefore(lessonSeries.getFinish())) {
             weeks.add(startDate.get(ChronoField.ALIGNED_WEEK_OF_YEAR));
             startDate = startDate.plusWeeks(lessonSeries.getRepeatWeek());
         }

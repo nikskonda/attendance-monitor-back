@@ -43,8 +43,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -89,23 +91,23 @@ public class GenerateService {
 
     Random random = new Random();
 
-    private List<String> names = new ArrayList<>();
-    private List<String> lastName = new ArrayList<>();
-    private List<String> patronymic = new ArrayList<>();
+    private Map<String, Object> names = new HashMap<>();
+    private Map<String, Object> lastName = new HashMap<>();
+    private Map<String, Object> patronymic = new HashMap<>();
     private List<String> subject = new ArrayList<>();
 
 
     private void loadAll() {
         try {
-//            names = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
-//            lastName = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
-//            patronymic = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
-//            subject = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
+            names = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), Map.class);
+            lastName = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), Map.class);
+            patronymic = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), Map.class);
+            subject = new ObjectMapper().readValue(new File("D:/maga/attendance-monitoring/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
 
-            names = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
-            lastName = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
-            patronymic = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
-            subject = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
+//            names = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/names.json"), List.class);
+//            lastName = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/lastNames.json"), List.class);
+//            patronymic = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/patronymic.json"), List.class);
+//            subject = new ObjectMapper().readValue(new File("/home/nikskonda/Documents/att-monitor/attendance-monitor-back/component/attendance-monitoring-impl/src/main/resources/dataToGenerate/subject.json"), List.class);
 
         } catch (Exception ex) {
         }
@@ -119,6 +121,22 @@ public class GenerateService {
         }
         return result;
     }
+    List<Integer> sums = new ArrayList<>();
+    private String getPopular(List<String> list) {
+        if (sums.isEmpty()) {
+            sums.add(1);
+            for(int i = 1; i<100; i++) {
+                sums.add(sums.get(i-1) + i);
+            }
+        }
+        int numb = random.nextInt(sums.get(list.size()-1));
+        for (int i = 0; i<list.size() - 1; i++) {
+            if (numb > sums.get(list.size() - i - 2)) {
+                return list.get(i);
+            }
+        }
+        return list.get(0);
+    }
 
     public void createBase() {
         if (roleRepository.findAll().size() > 0) {
@@ -126,17 +144,16 @@ public class GenerateService {
             return;
         }
         System.out.println("CREATION ...");
-        roleRepository.save(new Role(RoleConstant.STUDENT.getId(), RoleConstant.STUDENT.getRole()));
-        roleRepository.save(new Role(RoleConstant.PROFESSOR.getId(), RoleConstant.PROFESSOR.getRole()));
-        roleRepository.save(new Role(RoleConstant.PARENT.getId(), RoleConstant.PARENT.getRole()));
-        roleRepository.save(new Role(RoleConstant.EDITOR.getId(), RoleConstant.EDITOR.getRole()));
-        Role role4 = roleRepository.save(new Role(RoleConstant.ADMIN.getId(), RoleConstant.ADMIN.getRole()));
-
-
         Set<Role> adminRole = new HashSet<>();
-        adminRole.add(role4);
-        personRepository.save(new Person(null, "admin", "admin", "admin", "admin@bntu.by", null));
-        accountRepository.save(new Account("admin@bntu.by", bCryptPasswordEncoder.encode("admin"), LocalDate.now().plusYears(10), adminRole));
+        adminRole.add(roleRepository.save(new Role(null, RoleConstant.STUDENT.getRole())));
+        adminRole.add(roleRepository.save(new Role(null, RoleConstant.PROFESSOR.getRole())));
+        adminRole.add(roleRepository.save(new Role(null, RoleConstant.PARENT.getRole())));
+        adminRole.add(roleRepository.save(new Role(null, RoleConstant.EDITOR.getRole())));
+        adminRole.add(roleRepository.save(new Role(null, RoleConstant.REPORT_VIEW.getRole())));
+//        Role role4 = roleRepository.save(new Role(RoleConstant.ADMIN.getId(), RoleConstant.ADMIN.getRole()));
+//        adminRole.add(role4);
+        personRepository.save(new Person(null, "Никита", "Андреевич", "Шконда", "admin@bntu.by", null));
+        accountRepository.save(new Account("admin@bntu.by", bCryptPasswordEncoder.encode("pass"+"admin"), LocalDate.now().plusYears(10), adminRole));
 
         LocalTime startTime = LocalTime.of(8, 0, 0, 0);
         List<LessonSchedule> lessonSchedules = new ArrayList<>();
@@ -165,23 +182,23 @@ public class GenerateService {
         Role role1 = roleRepository.findById(RoleConstant.STUDENT.getId()).get();
         Role role2 = roleRepository.findById(RoleConstant.PROFESSOR.getId()).get();
         Role role3 = roleRepository.findById(RoleConstant.PARENT.getId()).get();
-        Role role4 = roleRepository.findById(RoleConstant.ADMIN.getId()).get();
+        Role role4 = roleRepository.findById(RoleConstant.REPORT_VIEW.getId()).get();
 
 
         Speciality speciality1 = new Speciality(null, "ПОИТ");
         Speciality speciality2 = new Speciality(null, "ИСИТ");
-        Speciality speciality3 = new Speciality(null, "ПОИСИТ");
         speciality1 = specialityRepository.save(speciality1);
         speciality2 = specialityRepository.save(speciality2);
-        speciality3 = specialityRepository.save(speciality3);
 
         List<Group> groups = new ArrayList<>();
-        groups.add(new Group(null, "10701115", speciality1));
-        groups.add(new Group(null, "10701215", speciality1));
-        groups.add(new Group(null, "10702115", speciality2));
-        groups.add(new Group(null, "10702215", speciality2));
-        groups.add(new Group(null, "10703116", speciality3));
-        groups.add(new Group(null, "10703215", speciality3));
+        groups.add(new Group(null, "10701119", speciality1));
+        groups.add(new Group(null, "10701219", speciality1));
+        groups.add(new Group(null, "10702119", speciality2));
+        groups.add(new Group(null, "10702219", speciality2));
+        groups.add(new Group(null, "10701120", speciality1));
+        groups.add(new Group(null, "10701220", speciality1));
+        groups.add(new Group(null, "10702120", speciality2));
+        groups.add(new Group(null, "10702220", speciality2));
         groups = groupRepository.saveAll(groups);
 
         List<Position> positions = new ArrayList<>();
@@ -190,7 +207,7 @@ public class GenerateService {
         positions.add(new Position(null, "Доцент"));
         positions.add(new Position(null, "Старший преподаватель"));
         positions.add(new Position(null, "Преподаватель"));
-        positions.add(new Position(null, "Acистент"));
+        positions.add(new Position(null, "Accистент"));
 
         positions = positionRepository.saveAll(positions);
 
@@ -201,15 +218,20 @@ public class GenerateService {
         studRole.add(role1);
         Set<Role> parentRole = new HashSet<>();
         parentRole.add(role3);
-        for (int i = 0; i < 130; i++) {
+        List<String> pols = Arrays.asList("male", "female");
+        for (int i = 0; i < groups.size() * 20; i++) {
             String name = "stud" + i;
             String email = "stud" + i + "@bntu.by";
-            Person stud = personRepository.save(new Person(null, get(names, false), get(lastName, false), get(patronymic, false), email, null));
-            accounts.add(new Account(email, bCryptPasswordEncoder.encode(name), LocalDate.now().plusYears(1), studRole));
-            studs.add(new StudentGroup(groups.get(random.nextInt(groups.size())), stud,
-                    GroupVolumeConstant.values()[random.nextInt(GroupVolumeConstant.values().length - 1) + 1].getId()));
+            String pol = get(pols, false);
+            String fname = getPopular((List<String>)names.get(pol));
+            String sname = get((List<String>)lastName.get(pol), false);
+            String pname = get((List<String>)patronymic.get(pol), false);
+            Person stud = personRepository.save(new Person(null, fname, sname, pname, email, null));
+            accounts.add(new Account(email, bCryptPasswordEncoder.encode("pass"+name), LocalDate.now().plusYears(1), studRole));
+            studs.add(new StudentGroup(groups.get(i/25), stud,
+                    GroupVolumeConstant.values()[i%25/12 + 1].getId()));
             if (random.nextInt(100) > 20) {
-                Account parent = accountRepository.save(new Account("parent" + i + "@bntu.by", bCryptPasswordEncoder.encode("parent" + i), LocalDate.now().plusYears(1), parentRole));
+                Account parent = accountRepository.save(new Account("parent" + i + "@bntu.by", bCryptPasswordEncoder.encode("pass"+"parent" + i), LocalDate.now().plusYears(1), parentRole));
                 parents.add(new ParentContact(parent, stud));
             }
         }
@@ -220,22 +242,29 @@ public class GenerateService {
         profRole.add(role2);
         List<ProfessorPosition> profs = new ArrayList<>();
 
+        List<String> codes = Arrays.asList("29", "44", "33");
         for (int i = 0; i < 20; i++) {
             String name = "prof" + i;
             String email = name + "@bntu.by";
-            String phone = RandomStringUtils.randomNumeric(9);
+            String phone = RandomStringUtils.randomNumeric(7);
             if (StringUtils.isNotBlank(phone)) {
                 phone = phone.replaceAll("\\D", "");
-                phone = (String.format("(%s) %s-%s-%s", phone.substring(0, 2), phone.substring(2, 5), phone.substring(5, 7), phone.substring(7)));
+                phone = (String.format("(%s) %s-%s-%s", get(codes, false), phone.substring(0, 3), phone.substring(3, 5), phone.substring(5)));
             }
+
+            String pol = get(pols, false);
+            String fname = getPopular((List<String>)names.get(pol));
+            String sname = get((List<String>)lastName.get(pol), false);
+            String pname = get((List<String>)patronymic.get(pol), false);
+
             Person prof = personRepository.save(new Person(
                     null,
-                    get(names, false),
-                    get(lastName, false),
-                    get(patronymic, false),
+                    fname,
+                    sname,
+                    pname,
                     email,
                     phone));
-            accounts.add(new Account(email, bCryptPasswordEncoder.encode(name), LocalDate.now().plusYears(1), profRole));
+            accounts.add(new Account(email, bCryptPasswordEncoder.encode("pass"+name), LocalDate.now().plusYears(1), profRole));
             profs.add(new ProfessorPosition(positions.get(random.nextInt(positions.size())), prof));
         }
 
@@ -243,10 +272,10 @@ public class GenerateService {
         accountRepository.saveAll(accounts);
 
         List<Subject> subjects = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
-            Subject subject = new Subject();
-            subject.setName(get(this.subject, true));
-            subjects.add(subject);
+        for (String s : subject) {
+            Subject sub = new Subject();
+            sub.setName(s);
+            subjects.add(sub);
         }
         subjects = subjectRepository.saveAll(subjects);
 
@@ -268,7 +297,7 @@ public class GenerateService {
                             SubjectTypeConstant.values()[random.nextInt(SubjectTypeConstant.values().length - 1) + 1];
 
                     for (int week = 0; week < 10; week++) {
-                        LocalDate date = LocalDate.of(2020, 8, 31);
+                        LocalDate date = LocalDate.of(2020, 11, 2);
                         date = date.plusWeeks(week * 2);
                         date = date.plusDays(dayOfWeek);
                         lessons.add(new Lesson(null,

@@ -20,14 +20,24 @@ public class PersonDto extends ObjectRef {
 
     public String getFullName() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(lastName).append(" ").append(firstName).append(" ").append(patronymic);
+        if (StringUtils.isNotBlank(lastName) && StringUtils.isNotBlank(firstName)) {
+            stringBuilder.append(lastName).append(" ").append(firstName);
+            if (StringUtils.isNotBlank(patronymic)) {
+                stringBuilder.append(" ").append(patronymic);
+            }
+        }
+
         return stringBuilder.toString();
     }
+
     public String getShortName() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(lastName).append(" ").append(firstName.substring(0, 1)).append(".");
-        if (StringUtils.isNotBlank(patronymic)) {
-            stringBuilder.append(" ").append(patronymic.substring(0, 1)).append(".");
+        if (StringUtils.isNotBlank(lastName) && StringUtils.isNotBlank(firstName)) {
+
+            stringBuilder.append(lastName).append(" ").append(firstName.substring(0, 1)).append(".");
+            if (StringUtils.isNotBlank(patronymic)) {
+                stringBuilder.append(" ").append(patronymic.substring(0, 1)).append(".");
+            }
         }
         return stringBuilder.toString();
     }

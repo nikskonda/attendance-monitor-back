@@ -6,6 +6,7 @@ import com.bntu.master.attendance.monitor.api.model.LessonDto;
 import com.bntu.master.attendance.monitor.api.model.LessonScheduleDto;
 import com.bntu.master.attendance.monitor.api.model.LessonSeries;
 import com.bntu.master.attendance.monitor.api.model.ObjectRef;
+import com.bntu.master.attendance.monitor.api.model.RoleConstant;
 import com.bntu.master.attendance.monitor.api.model.scheduleGrid.ScheduleList;
 import com.bntu.master.attendance.monitor.api.rest.LessonRest;
 import com.bntu.master.attendance.monitor.impl.service.LessonScheduleService;
@@ -54,8 +55,9 @@ public class LessonRestImpl implements LessonRest {
             if (personId != null &&
                     authentication.getAuthorities()
                             .stream()
+                            .filter(a -> RoleConstant.EDITOR.equals(RoleConstant.valueOf(a.getAuthority())) ||
+                                    RoleConstant.REPORT_VIEW.equals(RoleConstant.valueOf(a.getAuthority())))
                             .findFirst()
-                            .filter(a -> "ADMIN".equals(a.getAuthority()))
                             .isPresent()) {
                 return service.findGridByDateRange(startDate, finalDate, personId, topDateHeader);
             } else {

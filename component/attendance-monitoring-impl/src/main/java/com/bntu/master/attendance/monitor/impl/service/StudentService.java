@@ -116,9 +116,9 @@ public class StudentService {
         }
         studentGroup = repository.save(studentGroup);
 
-
+        ParentContact parentContact = null;
         if (StringUtils.isNotBlank(studentDto.getParentEmail())) {
-            ParentContact parentContact = parentRepository.findFirstByStudent(stud);
+            parentContact = parentRepository.findFirstByStudent(stud);
             if (parentContact == null) {
                 Account parent = accountService.createOrAddRoleIfExists(studentDto.getParentEmail(), RoleConstant.PARENT);
                 parentContact = parentRepository.save(new ParentContact(parent, stud));
@@ -126,12 +126,15 @@ public class StudentService {
                 if (!studentDto.getParentEmail().equals(parentContact.getParent().getEmail())) {
                     Account parent = accountService.createOrAddRoleIfExists(studentDto.getParentEmail(), RoleConstant.PARENT);
                     parentContact.setParent(parent);
-                    parentRepository.save(parentContact);
+                    parentContact = parentRepository.save(parentContact);
                 }
             }
         }
-
-        return converter.convertToDto(parentRepository.findFirstByStudent(stud), studentGroup);
+        if (parentContact == null) {
+            parentContact = new ParentContact();
+            parentContact.setStudent(stud);
+        }
+        return converter.convertToDto(parentContact, studentGroup);
     }
 
     public void delete(Long id) {
